@@ -3,9 +3,7 @@ import tkinter as tk
 import os
 import csv
 
-
-
-class Login:
+class Login(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("SoggyStreams")
@@ -19,6 +17,8 @@ class Login:
     def _build_frame(self):
         self.frame_input = ctk.CTkFrame(self)
         self.frame_input.pack(fill=ctk.X, padx=20, pady=(20, 10))
+        self.grid_rowconfigure((0, 1, 2, 3), weight=1)  # configure grid system
+        self.grid_columnconfigure(0, weight=1)
         
         ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams Account:").grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
@@ -28,14 +28,41 @@ class Login:
         self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
         self.entry_password.grid(row=2, column=0, padx=10, pady=10, sticky="ew")
 
-        self.btn_create = ctk.CTkButton(self.frame_input, 
-                                        text="Make an account here",
-                                        command = self._open_signup)
-        self.btn_create.grid(row=3, column=0, padx=10, pady=10, sticky="ew")     
-        
-        
-    
+        self.btn_create = ctk.CTkButton(self.frame_input,
+                                        text="Login", 
+                                        command = self._verif
+                                        )
+        self.btn_create.grid(row=3, column=0, padx=10, pady=10, sticky="ew")  
+    def _verif(self):
+        with open('data.csv' 'r') as csv_file:
+            pass
 
+class UserRecord:
+    
+    FIELDS = ["username", "password", "profiles", "plan"] #column names used in CSV
+    
+    # def save_to_csv(self, filepath):
+    # amendments to plan and profiles
+
+
+
+# make a csv, with the pre defined login details
+# then, check against the csv, to confirm details
+# then, verify details and let the user in
+
+if __name__ == "__main__":     
+    app = Login()
+    app.mainloop()
+
+
+
+
+
+
+
+
+  
+"""
 class Signup:
     def __init__(self):
         super().__init__()
@@ -47,6 +74,13 @@ class Signup:
         self._build_frame()
     
     def _build_frame(self):
+        self.grid_rowconfigure(0, weight=1)  # configure grid system
+        self.grid_columnconfigure(0, weight=1)
+
+        self.textbox = ctk.CTkEntry(self.frame_input, placeholder_text="Enter", show="*")
+        self.textbox.grid(row=1, column=0, padx=10, pady=10, sticky="ew")
+        self.textbox.insert("0.0", "Sign up here!\n" * 1)
+        """
 
 """ LOGIN UI"""
 ## big label "login"
@@ -61,4 +95,3 @@ class Signup:
 
 """WHATS NEEDED BACKEND"""
 # csv file for saving credentials (username, password, plan, payment, no. and name of profiles)
-
