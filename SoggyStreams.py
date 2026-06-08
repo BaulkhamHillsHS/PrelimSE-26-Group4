@@ -10,29 +10,32 @@ class Login(ctk.CTk):
         self.geometry("600x600")
         self.resizable(True, True)
         self._build_ui()
+        self.minsize(400, 300)
         
     def _build_ui(self):
         self._build_frame()
     
     def _build_frame(self):
+        # self.configure(fg_color = "dark blue") #configures background colour
         self.frame_input = ctk.CTkFrame(self)
-        self.frame_input.pack(fill=ctk.X, padx=20, pady=(20, 10)) #configure stretch
-        self.grid_rowconfigure((0, 1, 2, 3), weight=1)  # configure grid system
+        self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)  
         
-        ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams Account:").grid(row=0, column=1, padx=10, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams account:", font=("Arial", 14, "bold")).grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
-        self.entry_username = ctk.CTkEntry(self.frame_input, placeholder_text="Username")
-        self.entry_username.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username")
+        self.entry_username.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
 
         self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
-        self.entry_password.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+        self.entry_password.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
 
         self.btn_create = ctk.CTkButton(self.frame_input,
                                         text="Login", 
                                         command = self._verif
                                         )
-        self.btn_create.grid(row=3, column=0, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
+        self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
     def _verif(self):
         with open('data.csv', 'r') as csv_file:
             pass
