@@ -39,15 +39,24 @@ class Login(ctk.CTk):
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
     def _verif(self):
-        with open('data.csv', 'r') as csv_file:
+        with open('userdata.csv', 'r') as csv_file:
+            data = csv.DictReader(csv_file)
+            # for row in data:
+            #     if 
             pass
 
 class UserRecord:
     
     FIELDS = ["username", "password", "profiles", "plan"] #column names used in CSV
     
-    # def save_to_csv(self, filepath):
-    # amendments to plan and profiles
+    def __init__(self):
+        self._users = [] # private - encapsulation
+    
+
+
+
+# def save_to_csv(self, filepath):
+# amendments to plan and profiles
 
 
 
