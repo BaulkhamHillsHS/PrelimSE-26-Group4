@@ -16,7 +16,7 @@ class Login(ctk.CTk):
         self._build_frame()
     
     def _build_frame(self):
-        # self.configure(fg_color = "dark blue") #configures background colour
+        self.configure(fg_color = "#0A4163") #configures background colour
         self.frame_input = ctk.CTkFrame(self)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -33,7 +33,9 @@ class Login(ctk.CTk):
 
         self.btn_create = ctk.CTkButton(self.frame_input,
                                         text="Login", 
-                                        command = self._verif
+                                        command = self._verif,
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
     def _verif(self):
