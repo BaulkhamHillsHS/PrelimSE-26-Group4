@@ -11,7 +11,7 @@ class Login(ctk.CTk):
         self.resizable(True, True)
         self._build_ui()
         self.minsize(400, 300)
-        
+
     def _build_ui(self):
         self._build_frame()
     
@@ -44,7 +44,7 @@ class Login(ctk.CTk):
             # for row in data:
             #     if 
             pass
-
+        
 class UserRecord:
     
     FIELDS = ["username", "password", "profiles", "plan"] #column names used in CSV
@@ -58,11 +58,53 @@ class UserRecord:
 # def save_to_csv(self, filepath):
 # amendments to plan and profiles
 
-
-
 # make a csv, with the pre defined login details
 # then, check against the csv, to confirm details
 # then, verify details and let the user in
+
+class HomePage:
+    def __init__(self):
+        super().__init__()
+        self.title("SoggyStreams")
+        self.geometry("600x600")
+        self.resizable(True, True)
+        self._build_ui()
+        self.minsize(400, 300)
+    
+    def _build_ui(self):
+        self._build_frame()
+        
+    def _build_frame(self):
+        # self.configure(fg_color = "dark blue") #configures background colour
+        self.frame_input = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)
+        
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=0, padx=10, pady=10, sticky="ne")
+        
+        self.btn_settings = ctk.CTkButton(self.frame_input,
+                                        text="My Settings", 
+                                        command = self.openSettings
+                                        )
+        
+        self.btn_search = ctk.CTkButton(self.frame_input,
+                                        text="Search", 
+                                        command = self._openSearch
+                                        )
+        
+        
+    def openSearch(self):
+        # serach, watchlist
+        self.frame_input = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)
+        self.searchBar = ctk.CTkComboBox(self, values=["Dog", "Cat", "Rabbit"])
+    def openSettings(self):
+        # profiles, subs, updaet pay info, ?
+        pass
+    
 
 if __name__ == "__main__":     
     app = Login()
