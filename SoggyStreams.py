@@ -16,7 +16,7 @@ class Login(ctk.CTk):
         self._build_frame()
     
     def _build_frame(self):
-        # self.configure(fg_color = "dark blue") #configures background colour
+        self.configure(fg_color = "#0A4163") #configures background colour
         self.frame_input = ctk.CTkFrame(self)
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -33,19 +33,30 @@ class Login(ctk.CTk):
 
         self.btn_create = ctk.CTkButton(self.frame_input,
                                         text="Login", 
-                                        command = self._verif
+                                        command = self._verif,
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
     def _verif(self):
-        with open('data.csv', 'r') as csv_file:
+        with open('userdata.csv', 'r') as csv_file:
+            data = csv.DictReader(csv_file)
+            # for row in data:
+            #     if 
             pass
         
 class UserRecord:
     
     FIELDS = ["username", "password", "profiles", "plan"] #column names used in CSV
     
-    # def save_to_csv(self, filepath):
-    # amendments to plan and profiles
+    def __init__(self):
+        self._users = [] # private - encapsulation
+    
+
+
+
+# def save_to_csv(self, filepath):
+# amendments to plan and profiles
 
 # make a csv, with the pre defined login details
 # then, check against the csv, to confirm details
