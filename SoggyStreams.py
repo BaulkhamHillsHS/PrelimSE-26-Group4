@@ -103,6 +103,12 @@ class HomePage:
         self.searchBar = ctk.CTkComboBox(self, values=["Dog", "Cat", "Rabbit"])
     def openSettings(self):
         # profiles, subs, updaet pay info, ?
+
+
+
+
+        var1 = 22
+        print(var1) #placehooder ignore pls
         pass
     
 
