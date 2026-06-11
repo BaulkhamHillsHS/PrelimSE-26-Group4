@@ -30,7 +30,7 @@ class Login(ctk.CTk):
 
         self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
         self.entry_password.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
-
+        
         self.btn_create = ctk.CTkButton(self.frame_input,
                                         text="Login", 
                                         command = self._verif,
@@ -38,12 +38,21 @@ class Login(ctk.CTk):
                                         hover_color="#853601"
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
-    def _verif(self):
+    
+    def _verif(self): #add reveal password feature?
+        username = self.entry_username.get() #takes username from user input into username box
+        password = self.entry_password.get() #takes password from password input
+
         with open('userdata.csv', 'r') as csv_file:
             data = csv.DictReader(csv_file)
-            # for row in data:
-            #     if 
-            pass
+            for row in data:
+                if username == row['username'] and password == row['password']:
+                    print('Login Successful')
+                    return True
+                else:
+                    print('Invalid credentials')
+                    return False
+    
         
 class UserRecord:
     
