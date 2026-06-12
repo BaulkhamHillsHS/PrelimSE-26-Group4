@@ -55,6 +55,37 @@ class SoggyStreams(ctk.CTk):
         
         def __init__(self):
             self._users = [] # private - encapsulation
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams account:", font=("Arial", 14, "bold")).grid(row=1, column=1, padx=10, pady=10, sticky="n")
+
+        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username")
+        self.entry_username.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+
+        self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
+        self.entry_password.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+        
+        self.btn_create = ctk.CTkButton(self.frame_input,
+                                        text="Login", 
+                                        command = self._verif,
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
+                                        )
+        self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
+    
+    def _verif(self): #add reveal password feature?
+        username = self.entry_username.get() #takes username from user input into username box
+        password = self.entry_password.get() #takes password from password input
+
+        with open('userdata.csv', 'r') as csv_file:
+            data = csv.DictReader(csv_file)
+            for row in data:
+                if username == row['username'] and password == row['password']:
+                    print('Login Successful')
+                    return True
+                else:
+                    print('Invalid credentials')
+                    return False
+    
         
 
 
@@ -159,16 +190,20 @@ class SoggyStreams(ctk.CTk):
         
 
 if __name__ == "__main__":
+    def openSearch(self):
+        # serach, watchlist
+        self.frame_input = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)
+        self.searchBar = ctk.CTkComboBox(self, values=["Zootopia [G]", "Frozen [PG]", "Spider-Man: No Way Home [M]", "Deadpool [MA15+]", "Titanic [M]", "Wolf on Wall Street [R]", "Ninjago [PG]", "Pokemon [PG]", "The Umbrella Academy [MA15+]"])
+    def openSettings(self):
+        # profiles, subs, updaet pay info, ?
+
+
+if __name__ == "__main__":     
     app = Login()
     app.mainloop()
-
-
-
-
-
-
-
-
   
 """
 class Signup:
