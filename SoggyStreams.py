@@ -55,22 +55,22 @@ class SoggyStreams(ctk.CTk):
         
         def __init__(self):
             self._users = [] # private - encapsulation
-        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
-        ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams account:", font=("Arial", 14, "bold")).grid(row=1, column=1, padx=10, pady=10, sticky="n")
+            ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
+            ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams account:", font=("Arial", 14, "bold")).grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
-        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username")
-        self.entry_username.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+            self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username")
+            self.entry_username.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
 
-        self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
-        self.entry_password.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
-        
-        self.btn_create = ctk.CTkButton(self.frame_input,
-                                        text="Login", 
-                                        command = self._verif,
-                                        fg_color="#CC5404",
-                                        hover_color="#853601"
-                                        )
-        self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
+            self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
+            self.entry_password.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+            
+            self.btn_create = ctk.CTkButton(self.frame_input,
+                                            text="Login", 
+                                            command = self._verif,
+                                            fg_color="#CC5404",
+                                            hover_color="#853601"
+                                            )
+            self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
     
     def _verif(self): #add reveal password feature?
         username = self.entry_username.get() #takes username from user input into username box
