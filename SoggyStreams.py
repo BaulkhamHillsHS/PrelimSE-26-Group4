@@ -110,7 +110,6 @@ class HomePage:
         self.grid_columnconfigure(0, weight=1)
         self.frame_input.grid(row=0, column=0)
         self.searchBar = ctk.CTkComboBox(self, values=["Zootopia [G]", "Frozen [PG]", "Spider-Man: No Way Home [M]", "Deadpool [MA15+]", "Titanic [M]", "Wolf on Wall Street [R]", "Ninjago [PG]", "Pokemon [PG]", "The Umbrella Academy [MA15+]"])
-    def openSettings(self):
         # profiles, subs, updaet pay info, ?
 
 
