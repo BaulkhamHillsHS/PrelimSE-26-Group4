@@ -2,6 +2,10 @@ import customtkinter as ctk
 import tkinter as tk
 import os
 import csv
+from smtplib import SMTP
+import smtplib
+from email.message import EmailMessage
+import random
 
 class SoggyStreams(ctk.CTk):
     
@@ -49,7 +53,7 @@ class SoggyStreams(ctk.CTk):
                 #     if 
                 pass
             
-    class UserRecord:
+    class UserRecord(ctk.CTk):
         
         FIELDS = ["username", "password", "profiles", "plan"] #column names used in CSV
         
@@ -88,6 +92,30 @@ class SoggyStreams(ctk.CTk):
     
         
 
+        
+    
+    
+    
+    
+    def _twofactorsend(self, recipients): 
+        six_int_code = random.randint(100000,999999)
+        s = smtplib.SMTP_SSL('smtp.gmail.com', 465) #establishes sending connection on SMTP's port 465
+        email = 'your_email@example.com' #sender email (make a new gmail)
+        app_password = 'your_app_password'  #sender 2FA password (obtain from new gmail)
+        s.login(email, app_password) 
+        
+        for recipient in recipients:
+            msg = EmailMessage()
+            msg.set_content(f'Your SoggyStreams 2FA code is: {six_int_code}')
+            msg['Subject'] = 'SoggyStreams Verification Code' 
+            msg['From'] = email 
+            msg['To'] = recipient
+            s.send_message(msg)
+    
+        s.quit()
+        recipients = ['recipient1@example.com', 'recipient2@example.com'] #Recipients of the 2FA, need to change to verifier email/username
+        self._twofactorsend(recipients)
+
 
 
     # def save_to_csv(self, filepath):
@@ -97,7 +125,7 @@ class SoggyStreams(ctk.CTk):
     # then, check against the csv, to confirm details
     # then, verify details and let the user in
 
-    class HomePage:
+    class HomePage(ctk.CTk):
         def __init__(self):
             super().__init__()
             self.title("SoggyStreams")
@@ -201,7 +229,7 @@ if __name__ == "__main__":
 
 
 if __name__ == "__main__":     
-    app = Login()
+    app = SoggyStreams()
     app.mainloop()
   
 """
