@@ -7,8 +7,219 @@ import smtplib
 from email.message import EmailMessage
 import random
 
-class SoggyStreams(ctk.CTk):
+
+
+class Login(ctk.CTk):
     
+    def __init__(self):
+        super().__init__()
+        self.title("SoggyStreams")
+        self.geometry("600x600")
+        self.resizable(True, True)
+        self._build_ui()
+        self.minsize(400, 300)
+
+    def _build_ui(self):
+        self._build_frame()
+    
+    def _build_frame(self):
+        self.configure(fg_color = "#0A4163") #configures background colour
+        self.frame_input = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)  
+        
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams account:", font=("Arial", 14, "bold")).grid(row=1, column=1, padx=10, pady=10, sticky="n")
+
+        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username")
+        self.entry_username.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+
+        self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
+        self.entry_password.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+
+        self.btn_create = ctk.CTkButton(self.frame_input,
+                                        text="Login", 
+                                        command = self.openSearch,
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
+                                        )
+        self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
+        
+    def _verif(self):
+        with open('userdata.csv', 'r') as csv_file:
+            data = csv.DictReader(csv_file)
+            # for row in data:
+            #     if 
+            pass
+        
+class UserRecord:
+    
+    FIELDS = ["username", "password", "profiles", "plan"] #column names used in CSV
+    
+    def __init__(self):
+        self._users = [] # private - encapsulation
+    
+
+
+
+# def save_to_csv(self, filepath):
+# amendments to plan and profiles
+
+# make a csv, with the pre defined login details
+# then, check against the csv, to confirm details
+# then, verify details and let the user in
+
+class HomePage(ctk.CTk):
+    def __init__(self):
+        super().__init__()
+        self.title("SoggyStreams")
+        self.geometry("800x800")
+        self.resizable(True, True)
+        self._build_ui()
+        self.minsize(400, 300)
+    
+    def _build_ui(self):
+        self._build_frame()
+        
+    def _build_frame(self):
+        # self.configure(fg_color = "dark blue") #configures background colour
+        self.frame_input = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)
+        
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=10, pady=100, sticky="ne")
+        
+        self.btn_settings = ctk.CTkButton(self.frame_input,
+                                        text="My Settings", 
+                                        font = ("Comic Sans MS", 12),
+                                        command = self.openSettings
+                                        )
+        self.btn_settings.grid(row=1, column=0, padx=10, pady=10, sticky="n")
+        
+        self.btn_search = ctk.CTkButton(self.frame_input,
+                                        text="Search", 
+                                        font = ("Comic Sans MS", 12,),
+                                        command = self.openSearch
+                                        )
+        self.btn_search.grid(row=2, column=0, padx=10, pady=10, sticky="n")
+    
+    def openSearch(self):  
+        # serach, watchlist
+        for widget in self.winfo_children():
+            widget.destroy()
+
+        # Build new screen
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        
+        #self.searchBar = ctk.CTkComboBox(self, values=["Zootopia [G]", "Frozen [PG]", "Spider-Man: No Way Home [M]", "Deadpool [MA15+]", "Titanic [M]", "Wolf on Wall Street [R]", "Ninjago [PG]", "Pokemon [PG]", "The Umbrella Academy [MA15+]"])
+        #self.searchBar.grid(row=0, column=0, padx=20, pady=20)
+        
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw") # return home button
+        
+        ctk.CTkLabel(self.frame_input, text="Search for a movie or TV show:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        
+        self.search_entry = ctk.CTkEntry(self.frame_input, width=300, placeholder_text="Search...")
+        self.search_entry.grid(row=2, column=0, padx=20, pady=20) # search
+
+        self.search_button = ctk.CTkButton(self.frame_input, text="Go", command=self.run_search)
+        self.search_button.grid(row=2, column=1, padx=10, pady=20)
+    def run_search(self):
+        query = self.search_entry.get()
+        watches = ["Zootopia [G]", "Frozen [PG]", "Spider-Man: No Way Home [M]", "Deadpool [MA15+]", "Titanic [M]", "Wolf on Wall Street [R]", "Ninjago [PG]", "Pokemon [PG]", "The Umbrella Academy [MA15+]"]
+        watches2 = ["zootopia", "frozen", "spidermannowayhome", "deadpool", "titanic", "wolfonwallstreet", "ninjago", "pokemon", "theumbrellaacademy"]
+        searchMatches = 3
+        for i, watch in enumerate(watches2):
+            if query.lower().replace(" ", "").replace("-", "") in watch: #eliminating spaces for ease of search and ignoring typos (with spaces) etc.
+                self.search_results_button = ctk.CTkButton(self.frame_input, text=watches[i], command=lambda m=watches[i]: self.play_movie(m))
+                self.search_results_button.grid(row=searchMatches, column=0, padx=10, pady=20)
+                searchMatches += 1 # for the column of the search resutlts to stack down properly
+    
+    def play_movie(self, movie):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        ctk.CTkLabel(self.frame_input, text=f"Now playing: {movie}", font=("Arial", 18)).grid(row=0, column=0, padx=20, pady=20) 
+        #placeholder
+        ctk.CTkButton(self.frame_input, text="Return Home", command=self.return_home).grid(row=1, column=0, padx=10, pady=20)
+        
+    def return_home(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self._build_frame()
+    
+    def openSettings(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Settings", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Manage Profiles", command=self.manage_profiles).grid(row=2, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Subscription Details", command=self.subscription_details).grid(row=3, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Update Payment Information", command=self.update_payment_info).grid(row=4, column=0, padx=10, pady=10)
+        
+        # profiles, subs, updaet pay info, ?
+    def subscription_details(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Subscription Details", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        # HI BRYAN you need to load details from csv and display here    
+    def update_payment_info(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Update Payment Information", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        # HI BRYAN you need to load current payment details from csv and display here, with the option to update them and save to csv
+    
+    def manage_profiles(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Select a profile:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        
+        # HI BRYAN - you needa load profiles from csv and display them here, with the option to select one and then move to the home screen with that profile's details (plan, watchlist etc.)
+        #ALSO - needa able to delete profiles and edit accordingly
+        
+        create_profile_btn = ctk.CTkButton(self.frame_input, text="Create New Profile", command=self.create_profile)
+        create_profile_btn.grid(row=2, column=0, padx=10, pady=10)
+    def create_profile(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Create a new profile:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkEntry(self.frame_input, width=300, placeholder_text="Profile Name").grid(row=2, column=0, padx=20, pady=20)
+        ctk.CTkComboBox(self.frame_input, values=["Adult", "Child"]).grid(row=3, column=0, padx=20, pady=10)
+        ctk.CTkButton(self.frame_input, text="Create Profile").grid(row=4, column=0, padx=10, pady=10)
+        
+
+if __name__ == "__main__":
+    app = HomePage()
+    app.mainloop()
+
+
+
+
+
+
     class Login(ctk.CTk):
         
         def __init__(self):
