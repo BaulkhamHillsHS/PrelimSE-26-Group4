@@ -490,9 +490,9 @@ if __name__ == "__main__":
         # profiles, subs, updaet pay info, ?
 
 
-if __name__ == "__main__":     
-    app = SoggyStreams()
-    app.mainloop()
+#if __name__ == "__main__":     
+#    app = SoggyStreams()
+#    app.mainloop()
   
 """
 class Signup:
