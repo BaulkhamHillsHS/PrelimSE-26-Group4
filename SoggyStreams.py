@@ -2,12 +2,11 @@ import customtkinter as ctk
 import tkinter as tk
 import os
 import csv
-from smtplib import SMTP
 import smtplib
+from smtplib import SMTP
 from email.message import EmailMessage
 import random
-
-
+from PIL import Image # may need to pip install pillow for this to wrok (its for images)
 
 class Login(ctk.CTk):
     
@@ -78,32 +77,55 @@ class HomePage(ctk.CTk):
         self.resizable(True, True)
         self._build_ui()
         self.minsize(400, 300)
-    
+        self.configure(fg_color="#9C9C9C")
     def _build_ui(self):
         self._build_frame()
         
     def _build_frame(self):
         # self.configure(fg_color = "dark blue") #configures background colour
-        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input = ctk.CTkFrame(self, fg_color="#707070")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.frame_input.grid(row=0, column=0)
         
-        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=10, pady=100, sticky="ne")
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", text_color="#12173B", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=100, pady=100, sticky="ne")
         
         self.btn_settings = ctk.CTkButton(self.frame_input,
                                         text="My Settings", 
+                                        text_color= "#1B2258",
                                         font = ("Comic Sans MS", 12),
+                                        fg_color="#777A8C",
+                                        hover_color = "#1B2258",
                                         command = self.openSettings
                                         )
-        self.btn_settings.grid(row=1, column=0, padx=10, pady=10, sticky="n")
+        self.btn_settings.grid(row=1, column=0, padx=100, pady=10, sticky="n")
+        
+        self.btn_settings.bind(
+        "<Enter>",
+        lambda e: self.btn_settings.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        
+        self.btn_settings.bind(
+        "<Leave>",
+        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
         
         self.btn_search = ctk.CTkButton(self.frame_input,
                                         text="Search", 
+                                        text_color= "#1B2258",
                                         font = ("Comic Sans MS", 12,),
+                                        fg_color="#777A8C",
+                                        hover_color = "#1B2258",
                                         command = self.openSearch
                                         )
-        self.btn_search.grid(row=2, column=0, padx=10, pady=10, sticky="n")
+        self.btn_search.bind(
+        "<Enter>",
+        lambda e: self.btn_search.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        self.btn_search.bind(
+        "<Leave>",
+        lambda e: self.btn_search.configure(text_color="#1B2258", fg_color = "#777A8C"))
+        
+        self.btn_search.grid(row=2, column=0, padx=100, pady=(10, 100), sticky="n")
     
     def openSearch(self):  
         # serach, watchlist
@@ -117,7 +139,12 @@ class HomePage(ctk.CTk):
         #self.searchBar = ctk.CTkComboBox(self, values=["Zootopia [G]", "Frozen [PG]", "Spider-Man: No Way Home [M]", "Deadpool [MA15+]", "Titanic [M]", "Wolf on Wall Street [R]", "Ninjago [PG]", "Pokemon [PG]", "The Umbrella Academy [MA15+]"])
         #self.searchBar.grid(row=0, column=0, padx=20, pady=20)
         
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                text="SoggyStreams", 
+                                font = ("Comic Sans MS", 24, "bold"), 
+                                fg_color="#000000",
+                                hover_color="#000000",
+                                command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw") # return home button
         
         ctk.CTkLabel(self.frame_input, text="Search for a movie or TV show:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
@@ -125,7 +152,13 @@ class HomePage(ctk.CTk):
         self.search_entry = ctk.CTkEntry(self.frame_input, width=300, placeholder_text="Search...")
         self.search_entry.grid(row=2, column=0, padx=20, pady=20) # search
 
-        self.search_button = ctk.CTkButton(self.frame_input, text="Go", command=self.run_search)
+        self.search_button = ctk.CTkButton(self.frame_input, 
+                                           text="Go", 
+                                           text_color= "#1B2258",
+                                            font = ("Comic Sans MS", 12,),
+                                            fg_color="#777A8C",
+                                            hover_color = "#1B2258",
+                                           command=self.run_search)
         self.search_button.grid(row=2, column=1, padx=10, pady=20)
     def run_search(self):
         query = self.search_entry.get()
@@ -157,12 +190,17 @@ class HomePage(ctk.CTk):
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                 text="SoggyStreams", 
+                                 font = ("Comic Sans MS", 24, "bold"), 
+                                 fg_color="#CC5404",
+                                 hover_color="#853601",
+                                 command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Settings", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkButton(self.frame_input, text="Manage Profiles", command=self.manage_profiles).grid(row=2, column=0, padx=10, pady=10)
-        ctk.CTkButton(self.frame_input, text="Subscription Details", command=self.subscription_details).grid(row=3, column=0, padx=10, pady=10)
-        ctk.CTkButton(self.frame_input, text="Update Payment Information", command=self.update_payment_info).grid(row=4, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Manage Profiles", fg_color="#CC5404", hover_color="#853601", command=self.manage_profiles).grid(row=2, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Subscription Details", fg_color="#CC5404", hover_color="#853601", command=self.subscription_details).grid(row=3, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Update Payment Information", fg_color="#CC5404", hover_color="#853601", command=self.update_payment_info).grid(row=4, column=0, padx=10, pady=10)
         
         # profiles, subs, updaet pay info, ?
     def subscription_details(self):
@@ -170,7 +208,7 @@ class HomePage(ctk.CTk):
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color="#000000", hover_color="#000000", command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Subscription Details", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
         # HI BRYAN you need to load details from csv and display here    
@@ -179,7 +217,12 @@ class HomePage(ctk.CTk):
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                 text="SoggyStreams", 
+                                 font = ("Comic Sans MS", 24, "bold"), 
+                                 fg_color="#CC5404",
+                                 hover_color="#853601",
+                                 command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Update Payment Information", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
         # HI BRYAN you need to load current payment details from csv and display here, with the option to update them and save to csv
@@ -189,27 +232,35 @@ class HomePage(ctk.CTk):
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                 text="SoggyStreams", 
+                                 font = ("Comic Sans MS", 24, "bold"), 
+                                 fg_color="#CC5404",
+                                 hover_color="#853601",
+                                 command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Select a profile:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
         
         # HI BRYAN - you needa load profiles from csv and display them here, with the option to select one and then move to the home screen with that profile's details (plan, watchlist etc.)
         #ALSO - needa able to delete profiles and edit accordingly
         
-        create_profile_btn = ctk.CTkButton(self.frame_input, text="Create New Profile", command=self.create_profile)
+        create_profile_btn = ctk.CTkButton(self.frame_input, text="Create New Profile",  fg_color="#CC5404",
+                                        hover_color="#853601", command=self.create_profile)
         create_profile_btn.grid(row=2, column=0, padx=10, pady=10)
     def create_profile(self):
         for widget in self.winfo_children():
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color="#CC5404",
+                                        hover_color="#853601", command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Create a new profile:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkEntry(self.frame_input, width=300, placeholder_text="Profile Name").grid(row=2, column=0, padx=20, pady=20)
         ctk.CTkComboBox(self.frame_input, values=["Adult", "Child"]).grid(row=3, column=0, padx=20, pady=10)
-        ctk.CTkButton(self.frame_input, text="Create Profile").grid(row=4, column=0, padx=10, pady=10)
-        
+        ctk.CTkButton(self.frame_input, text="Create Profile", fg_color="#CC5404",
+                                        hover_color="#853601").grid(row=4, column=0, padx=10, pady=10)
+        # need to add a command to actually craete proifle to csv
 
 if __name__ == "__main__":
     app = HomePage()
