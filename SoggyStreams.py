@@ -31,7 +31,7 @@ class Login(ctk.CTk):
         ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
         ctk.CTkLabel(self.frame_input, text="Login to your SoggyStreams account:", font=("Arial", 14, "bold")).grid(row=1, column=1, padx=10, pady=10, sticky="n")
 
-        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username")
+        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="Username or email")
         self.entry_username.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
 
         self.entry_password = ctk.CTkEntry(self.frame_input, placeholder_text="Password", show="*")
@@ -39,35 +39,68 @@ class Login(ctk.CTk):
 
         self.btn_create = ctk.CTkButton(self.frame_input,
                                         text="Login", 
-                                        command = self.openSearch,
+                                        command = self._verif,
                                         fg_color="#CC5404",
                                         hover_color="#853601"
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
         
     def _verif(self): #add reveal password feature?
+        #add name_of_profiles,payment_info,watchlist,list_of_profiles,viewing_report,subscription_invoice to csv
+        #add asthetics
         username = self.entry_username.get() #takes username from user input into username box
         password = self.entry_password.get() #takes password from password input
+        email = self.entry_username.get()
 
         with open('userdata.csv', 'r') as csv_file:
             data = csv.DictReader(csv_file)
             for row in data:
-                if username == row['username'] and password == row['password']:
-                    print('Login Successful')
+                if username == row['username'] or email == row['email'] and password == row['password']:
+                    print('Login Successful') #don't print in terminal FIX
                     return True
-                else:
-                    print('Invalid credentials')
-                    return False
+                
+            print('Invalid credentials')
+            return False
     
+class twofactorpage(ctk.CTk): 
+    def __init__(self):
+        super().__init__()
+        self.title("SoggyStreams")
+        self.geometry("600x600")
+        self.resizable(True, True)
+        self._build_ui()
+        self.minsize(400, 300)
+        self.configure(fg_color="#0A4163")
+    def _build_ui(self):
+        self._build_frame()
+    
+    def _build_frame(self):
+        self.configure(fg_color = "#0A4163") #configures background colour
+        self.frame_input = ctk.CTkFrame(self)
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.frame_input.grid(row=0, column=0)  
         
-class UserRecord(ctk.CTk):
-    
-    
+        ctk.CTkLabel(self.frame_input, text="Verify your SoggyStreams account:", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        
+        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="2FA code")
+        self.entry_username.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+
+        self.btn_create = ctk.CTkButton(self.frame_input,
+                                        text="Verify", 
+                                        # command = self._verif, # link
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
+                                        )
+        self.btn_create.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
+
+
+class UserRecord(ctk.CTk): #link to two factor page
     def _twofactorsend(self, recipients): 
         six_int_code = random.randint(100000,999999)
         s = smtplib.SMTP_SSL('smtp.gmail.com', 465) #establishes sending connection on SMTP's port 465
-        email = 'your_email@example.com' #sender email (make a new gmail)
-        app_password = 'your_app_password'  #sender 2FA password (obtain from new gmail)
+        email = 'soggystreamsofficial@gmail.com' #sender email
+        app_password = 'ykax vdnb trqu wmhc'  #sender 2FA password
         s.login(email, app_password) 
         
         for recipient in recipients:
@@ -81,8 +114,6 @@ class UserRecord(ctk.CTk):
         s.quit()
         recipients = ['recipient1@example.com', 'recipient2@example.com'] #Recipients of the 2FA, need to change to verifier email/username
         self._twofactorsend(recipients)
-
-
 
 # def save_to_csv(self, filepath):
 # amendments to plan and profiles
