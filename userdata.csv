@@ -1,14 +1,14 @@
-username,email,password,subscription_plan,number_of_profiles
-MrDunne,ryan.dunne9@det.nsw.edu.au,Baulko11!!,Premium Plan,2
-BryanHe,bryan.he@education.nsw.gov.au,Baulko10!!,Ultra Premium Plan,2
-AnshNayak,ansh.nayak1@education.nsw.gov.au,Baulko9!!,Ultra Premium Plan,2
-LiamSmith,liam.smith42@education.nsw.gov.au,Baulko8!!,Standard Plan,1
-OliviaJones,olivia.jones15@education.nsw.gov.au,Baulko7!!,Premium Plan,3
-EthanBrown,ethan.brown3@education.nsw.gov.au,Baulko6!!,Ultra Premium Plan,4
-AvaWilson,ava.wilson22@education.nsw.gov.au,Baulko5!!,Standard Plan,1
-NoahTaylor,noah.taylor8@education.nsw.gov.au,Baulko4!!,Premium Plan,2
-MiaThomas,mia.thomas11@education.nsw.gov.au,Baulko3!!,Ultra Premium Plan,3
-OliverWhite,oliver.white9@education.nsw.gov.au,Baulko2!!,Standard Plan,1
-SophiaMartin,sophia.martin5@education.nsw.gov.au,Baulko1!!,Premium Plan,2
-LucasClark,lucas.clark14@education.nsw.gov.au,Baulko12!!,Ultra Premium Plan,4
-ChloeLewis,chloe.lewis7@education.nsw.gov.au,Baulko13!!,Standard Plan,1
+username,email,password,subscription_plan,number_of_profiles,card_number,card_exp,card_cvv
+MrDunne,ryan.dunne9@det.nsw.edu.au,Baulko11!!,Premium Plan,2,4111111111111111,09/27,452
+BryanHe,bryan.he@education.nsw.gov.au,Baulko10!!,Ultra Premium Plan,2,4532015112830366,03/26,318
+AnshNayak,ansh.nayak1@education.nsw.gov.au,Baulko9!!,Ultra Premium Plan,2,4916338506082832,11/28,204
+LiamSmith,liam.smith42@education.nsw.gov.au,Baulko8!!,Standard Plan,1,4929735477250483,07/27,519
+OliviaJones,olivia.jones15@education.nsw.gov.au,Baulko7!!,Premium Plan,3,4716814942826147,12/26,733
+EthanBrown,ethan.brown3@education.nsw.gov.au,Baulko6!!,Ultra Premium Plan,4,4024007183688442,05/28,621
+AvaWilson,ava.wilson22@education.nsw.gov.au,Baulko5!!,Standard Plan,1,4539578763621486,02/27,847
+NoahTaylor,noah.taylor8@education.nsw.gov.au,Baulko4!!,Premium Plan,2,4716389168050753,08/26,293
+MiaThomas,mia.thomas11@education.nsw.gov.au,Baulko3!!,Ultra Premium Plan,3,4929460873882626,04/29,156
+OliverWhite,oliver.white9@education.nsw.gov.au,Baulko2!!,Standard Plan,1,4532719668264205,10/27,482
+SophiaMartin,sophia.martin5@education.nsw.gov.au,Baulko1!!,Premium Plan,2,4916108926169416,06/28,374
+LucasClark,lucas.clark14@education.nsw.gov.au,Baulko12!!,Ultra Premium Plan,4,4024007124393858,01/27,916
+ChloeLewis,chloe.lewis7@education.nsw.gov.au,Baulko13!!,Standard Plan,1,4539418566384441,09/26,537

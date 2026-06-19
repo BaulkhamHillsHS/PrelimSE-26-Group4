@@ -283,7 +283,7 @@ class HomePage(ctk.CTk):
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['subscription_plan']}", font=("Comic Sans MS", 14)).grid(row=5, column=1, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Number of profiles:", font=("Comic Sans MS", 14)).grid(row=6, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['number_of_profiles']}", font=("Comic Sans MS", 14)).grid(row=6, column=1, padx=20, pady=10, sticky="w")
-        # HI BRYAN you need to load details from csv and display here, fix password encryption 
+        # HI BRYAN you need to fix password encryption 
     def update_payment_info(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -296,7 +296,14 @@ class HomePage(ctk.CTk):
                                  hover_color="#853601",
                                  command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
-        ctk.CTkLabel(self.frame_input, text="Update Payment Information", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Current Payment Information", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Card Number:", font=("Comic Sans MS", 14)).grid(row=2, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_number']}", font=("Comic Sans MS", 14)).grid(row=2, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Card Expiry:", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_exp']}", font=("Comic Sans MS", 14)).grid(row=3, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Card CVV:", font=("Comic Sans MS", 14)).grid(row=4, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_cvv']}", font=("Comic Sans MS", 14)).grid(row=4, column=1, padx=20, pady=10, sticky="w")
+        
         # HI BRYAN you need to load current payment details from csv and display here, with the option to update them and save to csv
     
     def manage_profiles(self):
@@ -333,6 +340,7 @@ class HomePage(ctk.CTk):
         ctk.CTkButton(self.frame_input, text="Create Profile", fg_color="#CC5404",
                                         hover_color="#853601").grid(row=4, column=0, padx=10, pady=10)
         # need to add a command to actually craete proifle to csv
+        # add log out button
 
 if __name__ == "__main__":
     app = Login()
