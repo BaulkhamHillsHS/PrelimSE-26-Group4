@@ -46,30 +46,24 @@ class Login(ctk.CTk):
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
         
-    def _verif(self): #add reveal password feature?
+    def _verif(self): #add reveal password feature? + Incorrect password feedback in actual widget
         #add to csv name_of_profiles,payment_info,watchlist,list_of_profiles,viewing_report,subscription_invoice
         #add asthetics
         username = self.entry_username.get() #takes username from user input into username box
         password = self.entry_password.get() #takes password from password input
         email = self.entry_username.get()
-        # pass_encrypt = password.encode('utf-8') #encryption of password into code
-        # salt = bcrypt.gensalt() #generation of salt
-        # hash = bcrypt.hashpw(pass_encrypt, salt)
-        
         
         with open('userdata.csv', 'r') as csv_file:
             data = csv.DictReader(csv_file)
             for row in data:
-                pass_encrypt = row['password'].encode('utf-8') #encryption of password into code
-                salt = bcrypt.gensalt() #generation of salt
-                hash = bcrypt.hashpw(pass_encrypt, salt)
-                print(row['username'], hash.decode('utf-8'))
-                if (username == row['username'] or email == row['email']) and password == row['password']:
-                    self.destroy()
-                    app = HomePage(user_logged_in=username, email_logged_in=email)
-                    app.mainloop()
-                    return 
-                
+                if username == row['username'] or email == row['email']:
+                    stored_hash = row['password'].encode('utf-8')
+                    if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
+                        self.destroy()
+                        app = HomePage(user_logged_in=username, email_logged_in=email)
+                        app.mainloop()
+                        return 
+                    
             print('Invalid credentials')
             return False
         
@@ -138,7 +132,7 @@ class HomePage(ctk.CTk):
     def __init__(self,user_logged_in,email_logged_in):
         super().__init__()
         self.title("SoggyStreams")
-        self.geometry("800x800")
+        self.geometry("1000x1000")
         self.resizable(True, True)
         self._build_ui()
         self.minsize(400, 300)
@@ -267,7 +261,7 @@ class HomePage(ctk.CTk):
         ctk.CTkButton(self.frame_input, text="Manage Profiles", fg_color="#CC5404", hover_color="#853601", command=self.manage_profiles).grid(row=2, column=0, padx=10, pady=10)
         ctk.CTkButton(self.frame_input, text="Subscription Details", fg_color="#CC5404", hover_color="#853601", command=self.subscription_details).grid(row=3, column=0, padx=10, pady=10)
         ctk.CTkButton(self.frame_input, text="Update Payment Information", fg_color="#CC5404", hover_color="#853601", command=self.update_payment_info).grid(row=4, column=0, padx=10, pady=10)
-        
+    
         # profiles, subs, updaet pay info, ?
     def subscription_details(self):
         for widget in self.winfo_children():
@@ -289,11 +283,16 @@ class HomePage(ctk.CTk):
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['email']}", font=("Comic Sans MS", 14)).grid(row=3, column=1, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Password:", font=("Comic Sans MS", 14)).grid(row=4, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['password']}", font=("Comic Sans MS", 14)).grid(row=4, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Decrypt", font=("Comic Sans MS", 14),command=self.decrypt_password).grid(row=4, column=2, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Current Plan:", font=("Comic Sans MS", 14)).grid(row=5, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['subscription_plan']}", font=("Comic Sans MS", 14)).grid(row=5, column=1, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Number of profiles:", font=("Comic Sans MS", 14)).grid(row=6, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['number_of_profiles']}", font=("Comic Sans MS", 14)).grid(row=6, column=1, padx=20, pady=10, sticky="w")
-        # HI BRYAN you need to fix password encryption 
+        # HI BRYAN you need to fix password encryption and stickiness, add command= to it, 
+    
+    def decrypt_password(self):
+        self.password_label.configure(text=self.user_details['original_password'])
+    
     def update_payment_info(self):
         for widget in self.winfo_children():
             widget.destroy()
