@@ -46,7 +46,7 @@ class Login(ctk.CTk):
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
         
     def _verif(self): #add reveal password feature?
-        #add name_of_profiles,payment_info,watchlist,list_of_profiles,viewing_report,subscription_invoice to csv
+        #add to csv name_of_profiles,payment_info,watchlist,list_of_profiles,viewing_report,subscription_invoice
         #add asthetics
         username = self.entry_username.get() #takes username from user input into username box
         password = self.entry_password.get() #takes password from password input
@@ -55,9 +55,11 @@ class Login(ctk.CTk):
         with open('userdata.csv', 'r') as csv_file:
             data = csv.DictReader(csv_file)
             for row in data:
-                if username == row['username'] or email == row['email'] and password == row['password']:
-                    print('Login Successful') #don't print in terminal FIX
-                    return True
+                if (username == row['username'] or email == row['email']) and password == row['password']:
+                    self.destroy()
+                    app = HomePage(user_logged_in=username, email_logged_in=email)
+                    app.mainloop()
+                    return 
                 
             print('Invalid credentials')
             return False
@@ -123,7 +125,7 @@ class UserRecord(ctk.CTk): #link to two factor page
 # then, verify details and let the user in
 
 class HomePage(ctk.CTk):
-    def __init__(self):
+    def __init__(self,user_logged_in,email_logged_in):
         super().__init__()
         self.title("SoggyStreams")
         self.geometry("800x800")
@@ -131,6 +133,8 @@ class HomePage(ctk.CTk):
         self._build_ui()
         self.minsize(400, 300)
         self.configure(fg_color="#41190D")
+        self.user_logged_in = user_logged_in
+        self.email_logged_in = email_logged_in
     def _build_ui(self):
         self._build_frame()
         
@@ -263,7 +267,23 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color="#000000", hover_color="#000000", command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Subscription Details", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
-        # HI BRYAN you need to load details from csv and display here    
+        with open('userdata.csv', 'r') as csv_file:
+            data = csv.DictReader(csv_file)
+            for row in data:
+                if row ["username"] == self.user_logged_in or row ["email"] == self.email_logged_in:
+                    self.user_details = dict(row)
+                    
+        ctk.CTkLabel(self.frame_input, text="Username:", font=("Comic Sans MS", 14)).grid(row=2, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['username']}", font=("Comic Sans MS", 14)).grid(row=2, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Email:", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['email']}", font=("Comic Sans MS", 14)).grid(row=3, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Password:", font=("Comic Sans MS", 14)).grid(row=4, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['password']}", font=("Comic Sans MS", 14)).grid(row=4, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Current Plan:", font=("Comic Sans MS", 14)).grid(row=5, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['subscription_plan']}", font=("Comic Sans MS", 14)).grid(row=5, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Number of profiles:", font=("Comic Sans MS", 14)).grid(row=6, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['number_of_profiles']}", font=("Comic Sans MS", 14)).grid(row=6, column=1, padx=20, pady=10, sticky="w")
+        # HI BRYAN you need to load details from csv and display here, fix password encryption 
     def update_payment_info(self):
         for widget in self.winfo_children():
             widget.destroy()
