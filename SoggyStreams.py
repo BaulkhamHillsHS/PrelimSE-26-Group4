@@ -22,8 +22,8 @@ class Login(ctk.CTk):
         self._build_frame()
     
     def _build_frame(self):
-        self.configure(fg_color = "#0A4163") #configures background colour
-        self.frame_input = ctk.CTkFrame(self)
+        self.configure(fg_color = "#072E46") #configures background colour 
+        self.frame_input = ctk.CTkFrame(self) #configures frame colour
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.frame_input.grid(row=0, column=0)  
@@ -130,18 +130,17 @@ class HomePage(ctk.CTk):
         self.resizable(True, True)
         self._build_ui()
         self.minsize(400, 300)
-        self.configure(fg_color="#9C9C9C")
+        self.configure(fg_color="#41190D")
     def _build_ui(self):
         self._build_frame()
         
     def _build_frame(self):
-        # self.configure(fg_color = "dark blue") #configures background colour
-        self.frame_input = ctk.CTkFrame(self, fg_color="#707070")
+        self.frame_input = ctk.CTkFrame(self, fg_color="transparent") #240E07 #9C9C9C
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.frame_input.grid(row=0, column=0)
         
-        ctk.CTkLabel(self.frame_input, text="SoggyStreams", text_color="#12173B", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=100, pady=100, sticky="ne")
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", text_color="#9C9C9C", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=125, pady=100, sticky="n")
         
         self.btn_settings = ctk.CTkButton(self.frame_input,
                                         text="My Settings", 
@@ -151,7 +150,7 @@ class HomePage(ctk.CTk):
                                         hover_color = "#1B2258",
                                         command = self.openSettings
                                         )
-        self.btn_settings.grid(row=1, column=0, padx=100, pady=10, sticky="n")
+        self.btn_settings.grid(row=1, column=0, padx=125, pady=10, sticky="n")
         
         self.btn_settings.bind(
         "<Enter>",
@@ -178,7 +177,7 @@ class HomePage(ctk.CTk):
         "<Leave>",
         lambda e: self.btn_search.configure(text_color="#1B2258", fg_color = "#777A8C"))
         
-        self.btn_search.grid(row=2, column=0, padx=100, pady=(10, 100), sticky="n")
+        self.btn_search.grid(row=2, column=0, padx=125, pady=(10, 100), sticky="n")
     
     def openSearch(self):  
         # serach, watchlist
