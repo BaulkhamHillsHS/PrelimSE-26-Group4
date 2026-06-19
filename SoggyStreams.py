@@ -6,6 +6,7 @@ import smtplib
 from smtplib import SMTP
 from email.message import EmailMessage
 import random
+import bcrypt
 # from PIL import Image # may need to pip install pillow for this to wrok (its for images)
 
 class Login(ctk.CTk):
@@ -51,10 +52,18 @@ class Login(ctk.CTk):
         username = self.entry_username.get() #takes username from user input into username box
         password = self.entry_password.get() #takes password from password input
         email = self.entry_username.get()
-
+        # pass_encrypt = password.encode('utf-8') #encryption of password into code
+        # salt = bcrypt.gensalt() #generation of salt
+        # hash = bcrypt.hashpw(pass_encrypt, salt)
+        
+        
         with open('userdata.csv', 'r') as csv_file:
             data = csv.DictReader(csv_file)
             for row in data:
+                pass_encrypt = row['password'].encode('utf-8') #encryption of password into code
+                salt = bcrypt.gensalt() #generation of salt
+                hash = bcrypt.hashpw(pass_encrypt, salt)
+                print(row['username'], hash.decode('utf-8'))
                 if (username == row['username'] or email == row['email']) and password == row['password']:
                     self.destroy()
                     app = HomePage(user_logged_in=username, email_logged_in=email)
@@ -63,6 +72,7 @@ class Login(ctk.CTk):
                 
             print('Invalid credentials')
             return False
+        
     
 class twofactorpage(ctk.CTk): 
     def __init__(self):
@@ -296,6 +306,11 @@ class HomePage(ctk.CTk):
                                  hover_color="#853601",
                                  command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        with open('userdata.csv', 'r') as csv_file:
+            data = csv.DictReader(csv_file)
+            for row in data:
+                if row ["username"] == self.user_logged_in or row ["email"] == self.email_logged_in:
+                    self.user_details = dict(row)
         ctk.CTkLabel(self.frame_input, text="Current Payment Information", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Card Number:", font=("Comic Sans MS", 14)).grid(row=2, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_number']}", font=("Comic Sans MS", 14)).grid(row=2, column=1, padx=20, pady=10, sticky="w")
