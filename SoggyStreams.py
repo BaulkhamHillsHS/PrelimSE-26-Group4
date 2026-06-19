@@ -46,7 +46,7 @@ class Login(ctk.CTk):
                                         )
         self.btn_create.grid(row=4, column=1, padx=10, pady=10, sticky="ew") #change weighting to allow this button to move independently  
         
-    def _verif(self): #add reveal password feature? + Incorrect password feedback in actual widget
+    def _verif(self): #add reveal password feature? + Incorrect password feedback in actual widget + add enter to login option?
         #add to csv name_of_profiles,payment_info,watchlist,list_of_profiles,viewing_report,subscription_invoice
         #add asthetics
         username = self.entry_username.get() #takes username from user input into username box
@@ -120,13 +120,6 @@ class UserRecord(ctk.CTk): #link to two factor page
         s.quit()
         recipients = ['recipient1@example.com', 'recipient2@example.com'] #Recipients of the 2FA, need to change to verifier email/username
         self._twofactorsend(recipients)
-
-# def save_to_csv(self, filepath):
-# amendments to plan and profiles
-
-# make a csv, with the pre defined login details
-# then, check against the csv, to confirm details
-# then, verify details and let the user in
 
 class HomePage(ctk.CTk):
     def __init__(self,user_logged_in,email_logged_in):
@@ -262,7 +255,6 @@ class HomePage(ctk.CTk):
         ctk.CTkButton(self.frame_input, text="Subscription Details", fg_color="#CC5404", hover_color="#853601", command=self.subscription_details).grid(row=3, column=0, padx=10, pady=10)
         ctk.CTkButton(self.frame_input, text="Update Payment Information", fg_color="#CC5404", hover_color="#853601", command=self.update_payment_info).grid(row=4, column=0, padx=10, pady=10)
     
-        # profiles, subs, updaet pay info, ?
     def subscription_details(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -291,7 +283,7 @@ class HomePage(ctk.CTk):
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['number_of_profiles']}", font=("Comic Sans MS", 14)).grid(row=6, column=1, padx=20, pady=10, sticky="w")
         # HI BRYAN you need to fix stickiness
     
-    def decrypt_password(self): #make uncrypt option?
+    def decrypt_password(self):
         self.password_label.configure(text=self.user_details['original_password'])
     
     def update_payment_info(self):
@@ -334,7 +326,7 @@ class HomePage(ctk.CTk):
         self.cardno_label.configure(text=self.user_details['card_number']) 
         self.cardexp_label.configure(text=self.user_details['card_exp'])
         self.cardcvv_label.configure(text=self.user_details['card_cvv'])
-        # HI BRYAN you need to load current payment details from csv and display here, with the option to update them and save to csv
+        # HI BRYAN you need to add update payment info and save to csv, make password required to access this?
         
 
     def manage_profiles(self):
@@ -370,8 +362,9 @@ class HomePage(ctk.CTk):
         ctk.CTkComboBox(self.frame_input, values=["Adult", "Child"]).grid(row=3, column=0, padx=20, pady=10)
         ctk.CTkButton(self.frame_input, text="Create Profile", fg_color="#CC5404",
                                         hover_color="#853601").grid(row=4, column=0, padx=10, pady=10)
-        # need to add a command to actually craete proifle to csv
+        # Hey BRYAN need to add a command to actually craete proifle to csv
         # add log out button
+        # add no results found to search
 
 if __name__ == "__main__":
     app = Login()
