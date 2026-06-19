@@ -282,15 +282,16 @@ class HomePage(ctk.CTk):
         ctk.CTkLabel(self.frame_input, text="Email:", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['email']}", font=("Comic Sans MS", 14)).grid(row=3, column=1, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Password:", font=("Comic Sans MS", 14)).grid(row=4, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['password']}", font=("Comic Sans MS", 14)).grid(row=4, column=1, padx=20, pady=10, sticky="w")
-        ctk.CTkButton(self.frame_input, text="Decrypt", font=("Comic Sans MS", 14),command=self.decrypt_password).grid(row=4, column=2, padx=20, pady=10, sticky="w")
+        self.password_label = ctk.CTkLabel(self.frame_input, text="**********", font=("Comic Sans MS", 14))
+        self.password_label.grid(row=4, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Reveal Password", font=("Comic Sans MS", 14),command=self.decrypt_password).grid(row=4, column=2, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Current Plan:", font=("Comic Sans MS", 14)).grid(row=5, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['subscription_plan']}", font=("Comic Sans MS", 14)).grid(row=5, column=1, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Number of profiles:", font=("Comic Sans MS", 14)).grid(row=6, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['number_of_profiles']}", font=("Comic Sans MS", 14)).grid(row=6, column=1, padx=20, pady=10, sticky="w")
-        # HI BRYAN you need to fix password encryption and stickiness, add command= to it, 
+        # HI BRYAN you need to fix stickiness
     
-    def decrypt_password(self):
+    def decrypt_password(self): #make uncrypt option?
         self.password_label.configure(text=self.user_details['original_password'])
     
     def update_payment_info(self):
@@ -310,16 +311,32 @@ class HomePage(ctk.CTk):
             for row in data:
                 if row ["username"] == self.user_logged_in or row ["email"] == self.email_logged_in:
                     self.user_details = dict(row)
-        ctk.CTkLabel(self.frame_input, text="Current Payment Information", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text="Card Number:", font=("Comic Sans MS", 14)).grid(row=2, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_number']}", font=("Comic Sans MS", 14)).grid(row=2, column=1, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text="Card Expiry:", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_exp']}", font=("Comic Sans MS", 14)).grid(row=3, column=1, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text="Card CVV:", font=("Comic Sans MS", 14)).grid(row=4, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['card_cvv']}", font=("Comic Sans MS", 14)).grid(row=4, column=1, padx=20, pady=10, sticky="w")
-        
-        # HI BRYAN you need to load current payment details from csv and display here, with the option to update them and save to csv
+        ctk.CTkLabel(self.frame_input, text="Current Payment Information:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Card Number:", font=("Comic Sans MS", 14))
+        self.cardno_label = ctk.CTkLabel(self.frame_input, text="****************", font=("Comic Sans MS", 14))
+        self.cardno_label.grid(row=1, column=1, padx=20, pady=10, sticky="w")
+        self.updatecard_no = ctk.CTkButton(self.frame_input, text="Update Card Number", font=("Comic Sans MS", 14))
+        self.updatecard_no.grid(row=1, column=2, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Card Expiry:", font=("Comic Sans MS", 14)).grid(row=2, column=0, padx=20, pady=10, sticky="w")
+        self.cardexp_label = ctk.CTkLabel(self.frame_input, text="****", font=("Comic Sans MS", 14))
+        self.cardexp_label.grid(row=2, column=1, padx=20, pady=10, sticky="w")  
+        self.updateexp_no = ctk.CTkButton(self.frame_input, text="Update Card Expiry", font=("Comic Sans MS", 14))
+        self.updateexp_no.grid(row=2, column=2, padx=20, pady=10, sticky="w")      
+        ctk.CTkLabel(self.frame_input, text="Card CVV:", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        self.cardcvv_label = ctk.CTkLabel(self.frame_input, text="***", font=("Comic Sans MS", 14))
+        self.cardcvv_label.grid(row=3, column=1, padx=20, pady=10, sticky="w")
+        self.updatecvv_no = ctk.CTkButton(self.frame_input, text="Update CVV", font=("Comic Sans MS", 14))
+        self.updatecvv_no.grid(row=3, column=2, padx=20, pady=10, sticky="w")  
+        self.revealpay_label = ctk.CTkButton(self.frame_input, text="Reveal all payment information",font=("Comic Sans MS", 14),command=self.revealpay)
+        self.revealpay_label.grid(row=4, column=0, padx=20, pady=10, sticky="w")
     
+    def revealpay(self):
+        self.cardno_label.configure(text=self.user_details['card_number']) 
+        self.cardexp_label.configure(text=self.user_details['card_exp'])
+        self.cardcvv_label.configure(text=self.user_details['card_cvv'])
+        # HI BRYAN you need to load current payment details from csv and display here, with the option to update them and save to csv
+        
+
     def manage_profiles(self):
         for widget in self.winfo_children():
             widget.destroy()
