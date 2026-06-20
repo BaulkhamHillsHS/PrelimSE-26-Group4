@@ -155,8 +155,21 @@ class HomePage(ctk.CTk):
         "<Enter>",
         lambda e: self.btn_settings.configure(text_color="#777A8C", fg_color = "#1B2258"))
         
+        self.btn_profiles = ctk.CTkButton(self.frame_input,
+                                        text="Choose a profile", 
+                                        text_color= "#1B2258",
+                                        font = ("Comic Sans MS", 12),
+                                        fg_color="#777A8C",
+                                        hover_color = "#1B2258",
+                                        command = self.openProfiles
+                                        )
+        self.btn_profiles.grid(row=2, column=0, padx=125, pady=10, sticky="n")
         
-        self.btn_settings.bind(
+        self.btn_profiles.bind(
+        "<Enter>",
+        lambda e: self.btn_profiles.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        self.btn_profiles.bind(
         "<Leave>",
         lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
         
@@ -176,7 +189,7 @@ class HomePage(ctk.CTk):
         "<Leave>",
         lambda e: self.btn_search.configure(text_color="#1B2258", fg_color = "#777A8C"))
         
-        self.btn_search.grid(row=2, column=0, padx=125, pady=10, sticky="n")
+        self.btn_search.grid(row=3, column=0, padx=125, pady=10, sticky="n")
         
         self.btn_logout = ctk.CTkButton(self.frame_input,
                                         text="Log Out", 
@@ -194,7 +207,7 @@ class HomePage(ctk.CTk):
         "<Leave>",
         lambda e: self.btn_logout.configure(text_color="#1B2258", fg_color = "#777A8C"))
         
-        self.btn_logout.grid(row=3, column=0, padx=125, pady=10, sticky="n")
+        self.btn_logout.grid(row=4, column=0, padx=125, pady=10, sticky="n")
         
         self.btn_quit = ctk.CTkButton(self.frame_input,
                                         text="Quit", 
@@ -212,10 +225,23 @@ class HomePage(ctk.CTk):
         "<Leave>",
         lambda e: self.btn_quit.configure(text_color="#1B2258", fg_color = "#777A8C"))
         
-        self.btn_quit.grid(row=4, column=0, padx=125, pady=(10, 100), sticky="n")
+        self.btn_quit.grid(row=5, column=0, padx=125, pady=(10, 100), sticky="n")
     
     def openExit(self):
         self.destroy()
+    
+    def openProfiles(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                 text="SoggyStreams", 
+                                 font = ("Comic Sans MS", 24, "bold"), 
+                                 fg_color="#CC5404",
+                                 hover_color="#853601",
+                                 command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
     
     def openSearch(self):  
         # serach, watchlist
@@ -255,8 +281,8 @@ class HomePage(ctk.CTk):
                                            text="Back", 
                                            text_color= "#1B2258",
                                             font = ("Comic Sans MS", 12,),
-                                            fg_color="#243CC7",
-                                            hover_color = "#182787",
+                                            fg_color="#1A65CD",
+                                            hover_color = "#0D598F",
                                            command=self.exit_search)
         self.backsearch_button.grid(row=4, column=0, padx=10, pady=20)
     
@@ -290,6 +316,18 @@ class HomePage(ctk.CTk):
         self.frame_input.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(self.frame_input, text=f"Now playing: {movie}", font=("Arial", 18)).grid(row=0, column=0, padx=20, pady=20) 
         #placeholder
+        newviewdict = [] #new list to append
+        with open('viewinghistory.csv', 'r') as csv_file:
+            csvview = csv.DictReader(csv_file)
+            fieldnames = csvview.fieldnames #extract column headers
+            for row in csvview:
+                if self.user_logged_in == row['username']:
+                    row['viewed_movie'] = movie
+                newviewdict.append(row) #append all other rows to temporary dict
+        with open('viewinghistory.csv', 'w', newline='') as change_csv_file:
+            writer = csv.DictWriter(change_csv_file, fieldnames=fieldnames) #passes column names
+            writer.writeheader()
+            writer.writerows(newviewdict) #copies new information into csv from list
         ctk.CTkButton(self.frame_input, text="Return Home", command=self.return_home).grid(row=1, column=0, padx=10, pady=20)
         
     def return_home(self):
@@ -340,9 +378,48 @@ class HomePage(ctk.CTk):
         ctk.CTkButton(self.frame_input, text="Change Password", font=("Comic Sans MS", 14),command=self.change_password_page).grid(row=4, column=3, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text="Current Plan:", font=("Comic Sans MS", 14)).grid(row=5, column=0, padx=20, pady=10, sticky="w")
         ctk.CTkLabel(self.frame_input, text=f"{self.user_details['subscription_plan']}", font=("Comic Sans MS", 14)).grid(row=5, column=1, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text="Number of profiles:", font=("Comic Sans MS", 14)).grid(row=6, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['number_of_profiles']}", font=("Comic Sans MS", 14)).grid(row=6, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Change Plan", font=("Comic Sans MS", 14),command=self.change_plan_page).grid(row=5, column=2, padx=20, pady=10, sticky="w")
         ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backsettings).grid(row=7, column=0, padx=10, pady=10)
+    
+    def change_plan_page(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                 text="SoggyStreams", 
+                                 font = ("Comic Sans MS", 24, "bold"), 
+                                 fg_color="#CC5404",
+                                 hover_color="#853601",
+                                 command=self.return_home)
+        home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Current Plan:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text=f"{self.user_details['subscription_plan']}", font=("Comic Sans MS", 14)).grid(row=1, column=1, padx=20, pady=10, sticky="w")
+        ctk.CTkLabel(self.frame_input, text="Change your plan to:", font=("Comic Sans MS", 14)).grid(row=2, column=0, padx=20, pady=10, sticky="w")
+        all_plans = ["Standard", "Premium", "Ultra Premium"]
+        available_plans = [plan for plan in all_plans if plan != self.user_details['subscription_plan']]
+        self.plan_type = ctk.CTkComboBox(self.frame_input, values=available_plans)
+        self.plan_type.grid(row=2, column=1, padx=20, pady=10)
+        ctk.CTkLabel(self.frame_input, text="Your card will be automatically billed.", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Save", fg_color="#D46C22", hover_color="#B06714", command=self.save_plan).grid(row=4, column=0, padx=10, pady=10) 
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.subscription_details).grid(row=5, column=0, padx=10, pady=10) 
+
+    def save_plan(self):
+        new_plan = self.plan_type.get()
+        print('Success! Plan changed.')
+        newplandict = [] #new list to append
+        with open('userdata.csv', 'r') as csv_file:
+            csvplan = csv.DictReader(csv_file)
+            fieldnames = csvplan.fieldnames #extract column headers
+            for row in csvplan:
+                if self.user_logged_in == row['username'] or self.email_logged_in == row['email']:
+                    row['subscription_plan'] = new_plan
+                newplandict.append(row) #append all other rows to temporary dict
+        with open('userdata.csv', 'w', newline='') as change_csv_file:
+            writer = csv.DictWriter(change_csv_file, fieldnames=fieldnames) #passes column names
+            writer.writeheader()
+            writer.writerows(newplandict) #copies new information into csv from list
+        self.subscription_details()
     
     def decrypt_password(self):
         self.password_label.configure(text=self.user_details['original_password'])
@@ -370,6 +447,8 @@ class HomePage(ctk.CTk):
         self.newpasswordinput2.grid(row=3, column=1, padx=20, pady=10, sticky="w")
         self.confirmnumberchange = ctk.CTkButton(self.frame_input, text="Confirm",font=("Comic Sans MS", 14), command=self.checkpasswords)
         self.confirmnumberchange.grid(row=4, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.subscription_details).grid(row=5, column=0, padx=20, pady=10, sticky="w")
+
     def checkpasswords(self):
         textboxoldpassword = self.oldpasswordinput.get() #takes the input of the first box
         newpasswordinput1 = self.newpasswordinput1.get() #takes the input of the second box
@@ -463,6 +542,10 @@ class HomePage(ctk.CTk):
         self.newcardnumber2.grid(row=2, column=1, padx=20, pady=10, sticky="w")
         self.confirmnumberchange = ctk.CTkButton(self.frame_input, text="Confirm",font=("Comic Sans MS", 14), command=self.checkcardnumbers)
         self.confirmnumberchange.grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backpayment).grid(row=4, column=0, padx=20, pady=10, sticky="w")
+    
+    def backpayment(self):
+        self.update_payment_info()
         
     def checkcardnumbers(self):
         textboxcardno1 = self.newcardnumber1.get() #takes the input of the first card number box
@@ -509,6 +592,8 @@ class HomePage(ctk.CTk):
         ctk.CTkLabel(self.frame_input, text="Note: Please enter your card expiry as a four digit number, without spaces or slashes. Enter in MM/YY format.", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
         self.confirmexpirychange = ctk.CTkButton(self.frame_input, text="Confirm",font=("Comic Sans MS", 14), command=self.checkcardexpiry)
         self.confirmexpirychange.grid(row=4, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backpayment).grid(row=5, column=0, padx=20, pady=10, sticky="w")
+
     def checkcardexpiry(self):
         textboxcardexp1 = self.newcardexpiry1.get() #takes the input of the first card expiry box
         textboxcardexp2 = self.newcardexpiry2.get() #takes the input of the second card expiry box
@@ -563,6 +648,8 @@ class HomePage(ctk.CTk):
         self.newcvvnumber2.grid(row=2, column=1, padx=20, pady=10, sticky="w")
         self.confirmcvvchange = ctk.CTkButton(self.frame_input, text="Confirm",font=("Comic Sans MS", 14),command=self.checkcardcvv)
         self.confirmcvvchange.grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backpayment).grid(row=4, column=0, padx=20, pady=10, sticky="w")
+
     def checkcardcvv(self):
         textboxcvvno1 = self.newcvvnumber1.get() #takes the input of the first card CVV box
         textboxcvvno2 = self.newcvvnumber2.get() #takes the input of the second card CVV box
@@ -624,8 +711,8 @@ class HomePage(ctk.CTk):
         
         create_profile_btn = ctk.CTkButton(self.frame_input, text="Create New Profile",  fg_color="#CC5404",
                                         hover_color="#853601", command=self.create_profile)
-        create_profile_btn.grid(row=7, column=0, padx=10, pady=10)
-        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backsettings).grid(row=8, column=0, padx=10, pady=10)
+        create_profile_btn.grid(row=99, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backsettings).grid(row=100, column=0, padx=10, pady=10)
     
     def editprofiles(self):
         for widget in self.winfo_children():
@@ -711,10 +798,17 @@ class HomePage(ctk.CTk):
         self.prof_type.grid(row=3, column=0, padx=20, pady=10)
         ctk.CTkButton(self.frame_input, text="Create Profile", command=self.save_new_profile, fg_color="#CC5404",
                                         hover_color="#853601").grid(row=4, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backprofile).grid(row=5, column=0, padx=10, pady=10)
+    
+    def backprofile(self):
+        self.manage_profiles()
+
     
     def save_new_profile(self):
         newprofname = self.prof_name.get()
         newproftype = self.prof_type.get()
+        if newprofname == "":
+            return
         with open('userprofiles.csv', 'a', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow([self.user_logged_in, newprofname, newproftype])
