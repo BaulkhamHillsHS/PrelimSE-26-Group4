@@ -1,6 +1,5 @@
 username,profile_name,profile_type
 MrDunne,Ryan,Adult
-BryanHe,Bryan,Adult
 AnshNayak,Ansh,Adult
 LiamSmith,Liam,Child
 OliviaJones,Olivia,Child
@@ -12,7 +11,4 @@ OliverWhite,Oliver,Child
 SophiaMartin,Sophia,Child
 LucasClark,Lucas,Adult
 ChloeLewis,Chloe,Child
-
-BryanHe,test1,Child
-BryanHe,sad,Adult
-BryanHe,test2,Adult
+BryanHe,Bryan,Adult
