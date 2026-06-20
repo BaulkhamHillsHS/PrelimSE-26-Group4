@@ -125,7 +125,7 @@ class HomePage(ctk.CTk):
         self.geometry("1200x1000")
         self.resizable(True, True)
         self._build_ui()
-        self.minsize(800, 800)
+        self.minsize(1000, 600)
         self.configure(fg_color="#41190D")
         self.user_logged_in = user_logged_in
         self.email_logged_in = email_logged_in
@@ -178,6 +178,24 @@ class HomePage(ctk.CTk):
         
         self.btn_search.grid(row=2, column=0, padx=125, pady=10, sticky="n")
         
+        self.btn_logout = ctk.CTkButton(self.frame_input,
+                                        text="Log Out", 
+                                        text_color= "#1B2258",
+                                        font = ("Comic Sans MS", 12,),
+                                        fg_color="#777A8C",
+                                        hover_color = "#1B2258",
+                                        command = self.logout
+                                        )
+        self.btn_logout.bind(
+        "<Enter>",
+        lambda e: self.btn_logout.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        self.btn_logout.bind(
+        "<Leave>",
+        lambda e: self.btn_logout.configure(text_color="#1B2258", fg_color = "#777A8C"))
+        
+        self.btn_logout.grid(row=3, column=0, padx=125, pady=10, sticky="n")
+        
         self.btn_quit = ctk.CTkButton(self.frame_input,
                                         text="Quit", 
                                         text_color= "#1B2258",
@@ -194,7 +212,7 @@ class HomePage(ctk.CTk):
         "<Leave>",
         lambda e: self.btn_quit.configure(text_color="#1B2258", fg_color = "#777A8C"))
         
-        self.btn_quit.grid(row=3, column=0, padx=125, pady=(10, 100), sticky="n")
+        self.btn_quit.grid(row=4, column=0, padx=125, pady=(10, 100), sticky="n")
     
     def openExit(self):
         self.destroy()
@@ -582,14 +600,102 @@ class HomePage(ctk.CTk):
                                  command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Select a profile:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Edit Profiles", font=("Comic Sans MS", 14), command=self.editprofiles).grid(row=1, column=1, padx=20, pady=10, sticky="w")
         
-        # HI BRYAN - you needa load profiles from csv and display them here, with the option to select one and then move to the home screen with that profile's details (plan, watchlist etc.)
-        #ALSO - needa able to delete profiles and edit accordingly
+        self.user_profile_lst = []
+        with open('userprofiles.csv', 'r') as csv_file:
+            profilereader = csv.DictReader(csv_file)
+            for row in profilereader:
+                if row ["username"] == self.user_logged_in:
+                    self.user_profile_lst.append(row['profile_name'])
+        for i, profile in enumerate (self.user_profile_lst):
+            ctk.CTkButton(self.frame_input, text=profile, font=("Comic Sans MS", 14), command=self.profileclicked).grid(row=i+2, column=0, padx=10, pady=10)
+         
+        self.user_proftyp_lst = []
+        with open('userprofiles.csv', 'r') as csv_file:
+            proftypreader = csv.DictReader(csv_file)
+            for row in proftypreader:
+                if row ["username"] == self.user_logged_in:
+                    self.user_proftyp_lst.append(row['profile_type'])
+        for i, profile_typ in enumerate (self.user_proftyp_lst):
+            ctk.CTkLabel(self.frame_input, text=profile_typ, font=("Comic Sans MS", 14)).grid(row=i+2, column=1, padx=10, pady=10)
+        
+        # BRYAN - needa able to edit name and restriction accordingly
         
         create_profile_btn = ctk.CTkButton(self.frame_input, text="Create New Profile",  fg_color="#CC5404",
                                         hover_color="#853601", command=self.create_profile)
-        create_profile_btn.grid(row=2, column=0, padx=10, pady=10)
-        #ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backsettings).grid(row=5, column=0, padx=10, pady=10)
+        create_profile_btn.grid(row=7, column=0, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.backsettings).grid(row=8, column=0, padx=10, pady=10)
+    
+    def editprofiles(self):
+        for widget in self.winfo_children():
+            widget.destroy()
+        self.frame_input = ctk.CTkFrame(self)
+        self.frame_input.grid(row=0, column=0, sticky="nsew")
+        home_btn = ctk.CTkButton(self.frame_input, 
+                                 text="SoggyStreams", 
+                                 font = ("Comic Sans MS", 24, "bold"), 
+                                 fg_color="#CC5404",
+                                 hover_color="#853601",
+                                 command=self.return_home)
+        home_btn.grid(row=0, column=0, columnspan=3, padx=20, pady=20, sticky = "nw")
+        ctk.CTkLabel(self.frame_input, text="Choose profiles to edit or delete:", font=("Comic Sans MS", 14)).grid(row=1, column=0, columnspan=3, padx=20, pady=10, sticky="w")
+        
+        self.user_profile_lst = []
+        with open('userprofiles.csv', 'r') as csv_file:
+            profilereader = csv.DictReader(csv_file)
+            for row in profilereader:
+                if row ["username"] == self.user_logged_in:
+                    self.user_profile_lst.append(row['profile_name'])
+        
+        self.check_vars = []
+        for i, profile in enumerate (self.user_profile_lst):
+            check_var = ctk.StringVar(value="off")
+            self.check_vars.append(check_var)
+            deletecheckbox = ctk.CTkCheckBox(self.frame_input, text="", width=20,
+                         variable=check_var, onvalue="on", offvalue="off")
+            deletecheckbox.grid(row=i+2, column=0, padx=10, pady=10, sticky="w")
+            ctk.CTkButton(self.frame_input, text=profile, font=("Comic Sans MS", 14), command=self.profileclicked).grid(row=i+2, column=1, padx=10, pady=10)
+         
+        self.user_proftyp_lst = []
+        with open('userprofiles.csv', 'r') as csv_file:
+            proftypreader = csv.DictReader(csv_file)
+            for row in proftypreader:
+                if row ["username"] == self.user_logged_in:
+                    self.user_proftyp_lst.append(row['profile_type'])
+        for i, profile_typ in enumerate (self.user_proftyp_lst):
+            ctk.CTkLabel(self.frame_input, text=profile_typ, font=("Comic Sans MS", 14)).grid(row=i+2, column=2, padx=10, pady=10)
+                
+        delte_prof_btn = ctk.CTkButton(self.frame_input, text="Delete",  fg_color="#CC5404",
+                                        hover_color="#853601", command=self.checkbox_event)
+        delte_prof_btn.grid(row=7, column=1, padx=10, pady=10)
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.manage_profiles).grid(row=8, column=1, padx=10, pady=10) 
+    
+    def checkbox_event(self): 
+        to_delete = []
+        for i, var in enumerate(self.check_vars):
+            if var.get() == "on":
+                to_delete.append(self.user_profile_lst[i])
+        rows = []
+        with open('userprofiles.csv', 'r') as f:
+            reader = csv.DictReader(f)
+            fieldnames = reader.fieldnames
+            for row in reader:
+                if row['profile_name'] not in to_delete:
+                    rows.append(row)
+
+        with open('userprofiles.csv', 'w', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+
+        self.editprofiles()
+    
+    def profileclicked(self):
+        self.destroy()
+        app = HomePage(self.user_logged_in,self.email_logged_in,self.password_logged_in)
+        app.mainloop()  
+    
     def create_profile(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -599,15 +705,29 @@ class HomePage(ctk.CTk):
                                         hover_color="#853601", command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Create a new profile:", font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkEntry(self.frame_input, width=300, placeholder_text="Profile Name").grid(row=2, column=0, padx=20, pady=20)
-        ctk.CTkComboBox(self.frame_input, values=["Adult", "Child"]).grid(row=3, column=0, padx=20, pady=10)
-        ctk.CTkButton(self.frame_input, text="Create Profile", fg_color="#CC5404",
+        self.prof_name = ctk.CTkEntry(self.frame_input, width=300, placeholder_text="Profile Name")
+        self.prof_name.grid(row=2, column=0, padx=20, pady=20)
+        self.prof_type = ctk.CTkComboBox(self.frame_input, values=["Adult", "Child"])
+        self.prof_type.grid(row=3, column=0, padx=20, pady=10)
+        ctk.CTkButton(self.frame_input, text="Create Profile", command=self.save_new_profile, fg_color="#CC5404",
                                         hover_color="#853601").grid(row=4, column=0, padx=10, pady=10)
-        # Hey BRYAN need to add a command to actually craete proifle to csv
-        # add log out button
-        # add no results found to search
+    
+    def save_new_profile(self):
+        newprofname = self.prof_name.get()
+        newproftype = self.prof_type.get()
+        with open('userprofiles.csv', 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow([self.user_logged_in, newprofname, newproftype])
+        
+        self.manage_profiles()
+    
+    def logout(self):
+        self.destroy()
+        app = Login()
+        app.mainloop()        
 
 if __name__ == "__main__":
+    
     app = Login()
     app.mainloop()
   
