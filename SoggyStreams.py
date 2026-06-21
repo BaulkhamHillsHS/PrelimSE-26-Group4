@@ -155,6 +155,10 @@ class HomePage(ctk.CTk):
         "<Enter>",
         lambda e: self.btn_settings.configure(text_color="#777A8C", fg_color = "#1B2258"))
         
+        self.btn_settings.bind(
+        "<Leave>",
+        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
+        
         self.btn_profiles = ctk.CTkButton(self.frame_input,
                                         text="Choose a profile", 
                                         text_color= "#1B2258",
@@ -171,7 +175,7 @@ class HomePage(ctk.CTk):
         
         self.btn_profiles.bind(
         "<Leave>",
-        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
+        lambda e: self.btn_profiles.configure(text_color="#1B2258", fg_color="#777A8C"))
         
         self.btn_search = ctk.CTkButton(self.frame_input,
                                         text="Search", 
