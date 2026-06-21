@@ -42,6 +42,7 @@ class TVSHOW:
         self.thumbnail = thumbnail
         
 
+# 
 class Login(ctk.CTk):
     
     def __init__(self):
@@ -99,7 +100,7 @@ text_color=TEXT
                     stored_hash = row['password'].encode('utf-8') #encrypt using bcrypt
                     if bcrypt.checkpw(password.encode('utf-8'), stored_hash):
                         self.destroy()
-                        app = HomePage() #user_logged_in=username, email_logged_in=email, password_logged_in=password
+                        app = HomePage(user_logged_in=username, email_logged_in=email, password_logged_in=password)
                         app.mainloop()
                         return 
                     
@@ -108,8 +109,11 @@ text_color=TEXT
         
     
 class twofactorpage(ctk.CTk): 
-    def __init__(self):
+    def __init__(self, user_logged_in, email_logged_in, password_logged_in):
         super().__init__()
+        self.user_logged_in = user_logged_in
+        self.email_logged_in = email_logged_in
+        self.password_logged_in = password_logged_in
         self.title("SoggyStreams")
         self.geometry("600x600")
         self.resizable(True, True)
@@ -126,41 +130,75 @@ class twofactorpage(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.frame_input.grid(row=0, column=0)  
         
-        ctk.CTkLabel(self.frame_input, text="Verify your SoggyStreams account:", text_color=TEXT, font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        ctk.CTkLabel(self.frame_input, text="Verify your SoggyStreams account:", font=("Arial", 24, "bold")).grid(row=0, column=1, padx=10, pady=10, sticky="n")
         
-        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, fg_color=FRAME,
-text_color=TEXT,
-border_color=BORDER,
-placeholder_text_color=SUBTEXT, placeholder_text="2FA code")
+        self.entry_username = ctk.CTkEntry(self.frame_input, width = 300, placeholder_text="2FA code")
         self.entry_username.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
         self.btn_create = ctk.CTkButton(self.frame_input,
                                         text="Verify", 
                                         # command = self._verif, # link
-                                        fg_color=PRIMARY,
-hover_color=PRIMARY_DARK,
-text_color=TEXT
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
                                         )
-        self.btn_create.grid(row=2, column=1, padx=10, pady=10, sticky="ew")
-
-    def _twofactorsend(self, recipients): 
-        six_int_code = random.randint(100000,999999)
+        self.btn_create.grid(row=2, column=1, padx=10, pady=10, sticky="ew") #resend button
+        
+        self.btn_resend = ctk.CTkButton(self.frame_input,
+                                        text="Resend 2FA code", 
+                                        command = self._2fa_resend,
+                                        fg_color="#CC5404",
+                                        hover_color="#853601"
+                                        )
+        self.btn_resend.grid(row=3, column=1, padx=10, pady=10, sticky="ew")
+        
+        self.error_label = ctk.CTkLabel(self.frame_input, text="You may need to check your spam folder.", text_color="#FF6B6B", font=("Arial", 12))
+        self.error_label.grid(row=4, column=1, padx=10, pady=10, sticky="n")
+        
+        self.six_int_code = random.randint(100000,999999)
         s = smtplib.SMTP_SSL('smtp.gmail.com', 465) #establishes sending connection on SMTP's port 465
         email = 'soggystreamsofficial@gmail.com' #sender email
         app_password = 'ykax vdnb trqu wmhc'  #sender 2FA password
         s.login(email, app_password) 
         
+        recipients = [f'{self.email_logged_in}'] #Recipients of the 2FA, need to change to verifier email/username
+        
         for recipient in recipients:
             msg = EmailMessage()
-            msg.set_content(f'Your SoggyStreams 2FA code is: {six_int_code}')
+            msg.set_content(f'Your SoggyStreams 2FA code is: {self.six_int_code}')
             msg['Subject'] = 'SoggyStreams Verification Code' 
             msg['From'] = email 
             msg['To'] = recipient
             s.send_message(msg)
-    
         s.quit()
-        recipients = ['recipient1@example.com', 'recipient2@example.com'] #Recipients of the 2FA, need to change to verifier email/username
-        self._twofactorsend(recipients)
+    
+    def _2fa_verif(self):
+        user_fa_entered = self.entry_username.get()
+        if user_fa_entered == str(self.six_int_code):
+            self.destroy()
+            app = HomePage(user_logged_in=self.user_logged_in, email_logged_in=self.email_logged_in, password_logged_in=self.password_logged_in)
+            app.mainloop()
+            return
+        else:
+            self.error_label.configure(text="Incorrect code. Please try again.")
+    
+    def _2fa_resend(self):
+        self.six_int_code = random.randint(100000,999999)
+        s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        email = 'soggystreamsofficial@gmail.com'
+        app_password = 'ykax vdnb trqu wmhc'
+        s.login(email, app_password)
+        
+        recipients = [f'{self.email_logged_in}']
+        
+        for recipient in recipients:
+            msg = EmailMessage()
+            msg.set_content(f'Your SoggyStreams 2FA code is: {self.six_int_code}')
+            msg['Subject'] = 'SoggyStreams Verification Code'
+            msg['From'] = email
+            msg['To'] = recipient
+            s.send_message(msg)
+        s.quit()
+            
 
 class HomePage(ctk.CTk):
     def __init__(self): #self,user_logged_in,email_logged_in,password_logged_in
@@ -168,6 +206,9 @@ class HomePage(ctk.CTk):
         self.title("SoggyStreams")
         self.geometry("500x700")
         self.resizable(True, True)
+        self.user_logged_in = user_logged_in
+        self.email_logged_in = email_logged_in
+        self.password_logged_in = password_logged_in
         self._build_ui()
         self.configure(fg_color = BG)
         self.movies = [
@@ -187,6 +228,11 @@ class HomePage(ctk.CTk):
         #self.user_logged_in = user_logged_in
         #self.email_logged_in = email_logged_in
         #self.password_logged_in = password_logged_in
+        self.minsize(1000, 600)
+        self.configure(fg_color="#41190D")
+        self.user_logged_in = user_logged_in
+        self.email_logged_in = email_logged_in
+        self.password_logged_in = password_logged_in
     def _build_ui(self):
         self._build_frame()
         
@@ -200,12 +246,12 @@ class HomePage(ctk.CTk):
         script_dir = os.path.dirname(os.path.abspath(__file__))
         image_path = os.path.join(script_dir, "SoggyStreams.jpg")
         raw_image = Image.open(image_path) # need to add logo image to folder for this to work
-        logo_image = ctk.CTkImage(
+        self.logo_image = ctk.CTkImage(
             light_image=raw_image,
             dark_image=raw_image,
             size=(100, 100)
         )
-        image_label = ctk.CTkLabel(self.frame_input, text="", image=logo_image)
+        image_label = ctk.CTkLabel(self.frame_input, text="", image=self.logo_image)
         image_label.grid(row=1, column=0, padx=125, pady=40, sticky="n")
         
         ctk.CTkLabel(self.frame_input, text="SoggyStreams", text_color=TEXT, font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=125, pady=(100, 10), sticky="n")
@@ -220,6 +266,14 @@ text_color=TEXT,
                                         )
         self.btn_settings.grid(row=2, column=0, padx=125, pady=10, sticky="n")
         
+        """self.btn_settings.bind(
+        "<Enter>",
+        lambda e: self.btn_settings.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        self.btn_settings.bind(
+        "<Leave>",
+        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
+        
         self.btn_profiles = ctk.CTkButton(self.frame_input,
                                         text="Choose a profile", 
                                         font = ("Comic Sans MS", 12),
@@ -229,6 +283,14 @@ text_color=TEXT,
                                         command = self.openProfiles
                                         )
         self.btn_profiles.grid(row=2, column=0, padx=125, pady=10, sticky="n")
+        
+        self.btn_profiles.bind(
+        "<Enter>",
+        lambda e: self.btn_profiles.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        self.btn_profiles.bind(
+        "<Leave>",
+        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
         
         self.btn_search = ctk.CTkButton(self.frame_input,
                                         text="Search",
@@ -240,8 +302,8 @@ text_color=TEXT,
                                         )
        
         
-        self.btn_search.grid(row=3, column=0, padx=125, pady=(10, 100), sticky="n")
-        self.btn_search.grid(row=3, column=0, padx=125, pady=10, sticky="n")
+        self.btn_search.grid(row=4, column=0, padx=125, pady=(10, 100), sticky="n")
+        self.btn_search.grid(row=4, column=0, padx=125, pady=10, sticky="n")
         
         self.btn_logout = ctk.CTkButton(self.frame_input,
                                         text="Log Out", 
@@ -251,7 +313,14 @@ hover_color=PRIMARY_DARK,
 text_color=TEXT,
                                         command = self.logout
                                         )
-
+        self.btn_logout.bind(
+        "<Enter>",
+        lambda e: self.btn_logout.configure(text_color="#777A8C", fg_color = "#1B2258"))
+        
+        self.btn_logout.bind(
+        "<Leave>",
+        lambda e: self.btn_logout.configure(text_color="#1B2258", fg_color = "#777A8C"))
+        
         self.btn_logout.grid(row=4, column=0, padx=125, pady=10, sticky="n")
         
         self.btn_quit = ctk.CTkButton(self.frame_input,
@@ -265,7 +334,7 @@ text_color=TEXT,
                                         )
 
         
-        self.btn_quit.grid(row=5, column=0, padx=125, pady=(10, 100), sticky="n")
+        self.btn_quit.grid(row=6, column=0, padx=125, pady=(10, 100), sticky="n")
     
     def openExit(self):
         self.destroy()
@@ -547,13 +616,14 @@ text_color=TEXT, command=self.change_plan_page).grid(row=5, column=2, padx=20, p
         available_plans = [plan for plan in all_plans if plan != self.user_details['subscription_plan']]
         self.plan_type = ctk.CTkComboBox(self.frame_input, values=available_plans)
         self.plan_type.grid(row=2, column=1, padx=20, pady=10)
-        ctk.CTkLabel(self.frame_input, text="Your card will be automatically billed.", text_color=TEXT, font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
-        ctk.CTkButton(self.frame_input, text="Save", fg_color=PRIMARY, hover_color=PRIMARY_DARK, text_color=TEXT, command=self.save_plan).grid(row=4, column=0, padx=10, pady=10)
-        ctk.CTkButton(self.frame_input, text="Back", fg_color=PRIMARY, hover_color=PRIMARY_DARK, text_color=TEXT, command=self.subscription_details).grid(row=5, column=0, padx=10, pady=10)
+        ctk.CTkLabel(self.frame_input, text="Your card will be automatically billed.", font=("Comic Sans MS", 14)).grid(row=3, column=0, padx=20, pady=10, sticky="w")
+        ctk.CTkButton(self.frame_input, text="Save", fg_color="#D46C22", hover_color="#B06714", command=self.save_plan).grid(row=4, column=0, padx=10, pady=10) 
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.subscription_details).grid(row=5, column=0, padx=10, pady=10) 
 
     def save_plan(self):
         new_plan = self.plan_type.get()
         print('Success! Plan changed.')
+        self.generatesubscriptioninvoice() 
         newplandict = [] #new list to append
         with open('userdata.csv', 'r') as csv_file:
             csvplan = csv.DictReader(csv_file)
@@ -567,6 +637,23 @@ text_color=TEXT, command=self.change_plan_page).grid(row=5, column=2, padx=20, p
             writer.writeheader()
             writer.writerows(newplandict) #copies new information into csv from list
         self.subscription_details()
+    
+    def generatesubscriptioninvoice(self):
+        now = datetime.now()
+        filename = f"invoice_{self.user_logged_in}_{now.strftime('%Y%m%d_%H%M%S')}.txt"
+        with open(filename, 'w') as invoice:
+            invoice.write("SoggyStreams Subscription Invoice\n")
+            invoice.write("-" * 40 + "\n")
+            invoice.write(f"Date: {now.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            invoice.write(f"Username: {self.user_logged_in}\n")
+            invoice.write(f"Email: {self.email_logged_in}\n")
+            invoice.write("-" * 40 + "\n")
+            invoice.write(f"Previous Plan: {self.user_details['subscription_plan']}\n")
+            invoice.write(f"New Plan: {self.plan_type.get()}\n")
+            invoice.write("-" * 40 + "\n")
+            invoice.write(f"Card billed: {self.user_details['card_number']}\n")
+            invoice.write("-" * 40 + "\n")
+            invoice.write("Thank you for subscribing to SoggyStreams!\n")
     
     def decrypt_password(self):
         self.password_label.configure(text=self.user_details['original_password'])
@@ -898,9 +985,7 @@ text_color=TEXT, command=self.checkpasswords)
             deletecheckbox = ctk.CTkCheckBox(self.frame_input, text="", width=20,
                          variable=check_var, onvalue="on", offvalue="off")
             deletecheckbox.grid(row=i+2, column=0, padx=10, pady=10, sticky="w")
-            ctk.CTkButton(self.frame_input, text=profile, font=("Comic Sans MS", 14), fg_color=PRIMARY,
-hover_color=PRIMARY_DARK,
-text_color=TEXT, command=self.profileclicked).grid(row=i+2, column=1, padx=10, pady=10)
+            ctk.CTkButton(self.frame_input, text=profile, font=("Comic Sans MS", 14), command=self.profileclicked).grid(row=i+2, column=1, padx=10, pady=10)
          
         self.user_proftyp_lst = []
         with open('userprofiles.csv', 'r') as csv_file:
@@ -909,12 +994,12 @@ text_color=TEXT, command=self.profileclicked).grid(row=i+2, column=1, padx=10, p
                 if row ["username"] == self.user_logged_in:
                     self.user_proftyp_lst.append(row['profile_type'])
         for i, profile_typ in enumerate (self.user_proftyp_lst):
-            ctk.CTkLabel(self.frame_input, text=profile_typ, text_color=TEXT, font=("Comic Sans MS", 14)).grid(row=i+2, column=2, padx=10, pady=10)
+            ctk.CTkLabel(self.frame_input, text=profile_typ, font=("Comic Sans MS", 14)).grid(row=i+2, column=2, padx=10, pady=10)
                 
-        delte_prof_btn = ctk.CTkButton(self.frame_input, text="Delete",  fg_color=PRIMARY,
-                                        hover_color=PRIMARY_DARK, text_color=TEXT, command=self.checkbox_event)
+        delte_prof_btn = ctk.CTkButton(self.frame_input, text="Delete",  fg_color="#CC5404",
+                                        hover_color="#853601", command=self.checkbox_event)
         delte_prof_btn.grid(row=7, column=1, padx=10, pady=10)
-        ctk.CTkButton(self.frame_input, text="Back", fg_color=PRIMARY, hover_color=PRIMARY_DARK, text_color=TEXT, command=self.manage_profiles).grid(row=8, column=1, padx=10, pady=10) 
+        ctk.CTkButton(self.frame_input, text="Back", fg_color="#2B5BC3", hover_color="#2C4EAA", command=self.manage_profiles).grid(row=8, column=1, padx=10, pady=10) 
     
     def checkbox_event(self): 
         to_delete = []
