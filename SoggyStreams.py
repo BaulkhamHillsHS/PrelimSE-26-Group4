@@ -245,7 +245,7 @@ class HomePage(ctk.CTk):
             TVSHOW("Pokemon", "pokemon", rating="PG", seasons="9", episodes="718", thumbnail="Pokemon.jpg"),
             TVSHOW("The Umbrella Academy", "theumbrellaacademy", rating="MA15+", seasons = "4", episodes = "36", thumbnail="Umbrella.jpg")
         ]
-        
+
     def _build_ui(self):
         self._build_frame()
         
@@ -279,13 +279,6 @@ class HomePage(ctk.CTk):
                                         )
         self.btn_settings.grid(row=2, column=0, padx=125, pady=10, sticky="n")
         
-        self.btn_settings.bind(
-        "<Enter>",
-        lambda e: self.btn_settings.configure(text_color=TEXT, fg_color = MID))
-        
-        self.btn_settings.bind(
-        "<Leave>",
-        lambda e: self.btn_settings.configure(text_color=TEXT, fg_color=PRIMARY))
         
         self.btn_profiles = ctk.CTkButton(self.frame_input,
                                         text="Choose a profile", 
@@ -296,15 +289,7 @@ class HomePage(ctk.CTk):
                                         command = self.openProfiles
                                         )
         self.btn_profiles.grid(row=3, column=0, padx=125, pady=10, sticky="n")
-        
-        self.btn_profiles.bind(
-        "<Enter>",
-        lambda e: self.btn_profiles.configure(text_color=TEXT, fg_color = MID))
-        
-        self.btn_profiles.bind(
-        "<Leave>",
-        lambda e: self.btn_profiles.configure(text_color=TEXT, fg_color=PRIMARY))
-        
+     
         self.btn_search = ctk.CTkButton(self.frame_input,
                                         text="Search",
                                         font = ("Comic Sans MS", 12,),
@@ -325,13 +310,7 @@ class HomePage(ctk.CTk):
                                         hover_color=PRIMARY_DARK,
                                         command = self.logout
                                         )
-        self.btn_logout.bind(
-        "<Enter>",
-        lambda e: self.btn_logout.configure(text_color=TEXT, fg_color = MID))
-        
-        self.btn_logout.bind(
-        "<Leave>",
-        lambda e: self.btn_logout.configure(text_color=TEXT, fg_color = PRIMARY))
+
         
         self.btn_logout.grid(row=5, column=0, padx=125, pady=10, sticky="n")
         
@@ -343,13 +322,7 @@ class HomePage(ctk.CTk):
                                         hover_color=PRIMARY_DARK,
                                         command = self.openExit
                                         )
-        self.btn_quit.bind(
-        "<Enter>",
-        lambda e: self.btn_quit.configure(text_color=TEXT, fg_color = MID))
-        
-        self.btn_quit.bind(
-        "<Leave>",
-        lambda e: self.btn_quit.configure(text_color=TEXT, fg_color = PRIMARY))
+
         
         self.btn_quit.grid(row=6, column=0, padx=125, pady=(10, 100), sticky="n")
     
@@ -364,7 +337,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -382,7 +355,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                 text="SoggyStreams", 
                                 font = ("Comic Sans MS", 24, "bold"), 
-                                fg_color=PRIMARY,
+                                fg_color="transparent",
                                 hover_color=PRIMARY_DARK,
                                 text_color=TEXT,
                                 command=self.return_home)
@@ -518,7 +491,10 @@ class HomePage(ctk.CTk):
                 print("Thumbnail load failed:", e)
 
         # info line
-        info = f"{movie_obj.rating or ''}   {movie_obj.length or ''}"
+        if isinstance(movie_obj, Movie):
+            info = f"{movie_obj.rating}   {movie_obj.length}"
+        else:
+            info = f"{movie_obj.rating}   {movie_obj.seasons} Seasons   {movie_obj.episodes} Episodes"
         ctk.CTkLabel(
             self.frame_input,
             text=info,
@@ -548,27 +524,7 @@ class HomePage(ctk.CTk):
             writer.writerows(newviewdict) #copies new information into csv from list
         ctk.CTkButton(self.frame_input, text="Return Home", fg_color=PRIMARY, hover_color=PRIMARY_DARK, text_color=TEXT, command=self.return_home).grid(row=1, column=0, padx=10, pady=20)
             
-    def play_movie(self, movie):
-        for widget in self.winfo_children():
-            widget.destroy()
-        self.frame_input = ctk.CTkFrame(self, fg_color=FRAME)
-        self.frame_input.grid(row=0, column=0, sticky="nsew")
-        ctk.CTkLabel(self.frame_input, text=f"Now playing: {movie}", text_color=TEXT, font=("Arial", 18)).grid(row=0, column=0, padx=20, pady=20) 
-        #placeholder
-        newviewdict = [] #new list to append
-        with open('viewinghistory.csv', 'r') as csv_file:
-            csvview = csv.DictReader(csv_file)
-            fieldnames = csvview.fieldnames #extract column headers
-            for row in csvview:
-                if self.user_logged_in == row['username']:
-                    row['viewed_movie'] = movie
-                newviewdict.append(row) #append all other rows to temporary dict
-        with open('viewinghistory.csv', 'w', newline='') as change_csv_file:
-            writer = csv.DictWriter(change_csv_file, fieldnames=fieldnames) #passes column names
-            writer.writeheader()
-            writer.writerows(newviewdict) #copies new information into csv from list
-        ctk.CTkButton(self.frame_input, text="Return Home", fg_color=PRIMARY, hover_color=PRIMARY_DARK, text_color=TEXT, command=self.return_home).grid(row=1, column=0, padx=10, pady=20)
-        
+
     def return_home(self):
         for widget in self.winfo_children():
             widget.destroy()
@@ -582,7 +538,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -598,7 +554,7 @@ class HomePage(ctk.CTk):
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self, fg_color=FRAME)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color=PRIMARY, hover_color=PRIMARY_DARK, text_color=TEXT, command=self.return_home)
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color="transparent", hover_color=PRIMARY_DARK, text_color=TEXT, command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Subscription Details", text_color=TEXT, font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
         with open('userdata.csv', 'r') as csv_file:
@@ -629,7 +585,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -692,7 +648,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -746,7 +702,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -792,7 +748,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -842,7 +798,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -900,7 +856,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -947,7 +903,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -991,7 +947,7 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                  text="SoggyStreams", 
                                  font = ("Comic Sans MS", 24, "bold"), 
-                                 fg_color=PRIMARY,
+                                 fg_color="transparent",
                                  hover_color=PRIMARY_DARK,
                                  text_color=TEXT,
                                  command=self.return_home)
@@ -1078,7 +1034,7 @@ class HomePage(ctk.CTk):
             widget.destroy()
         self.frame_input = ctk.CTkFrame(self, fg_color=FRAME)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color=PRIMARY,
+        home_btn = ctk.CTkButton(self.frame_input, text="SoggyStreams", font = ("Comic Sans MS", 24, "bold"), fg_color="transparent",
                                         hover_color=PRIMARY_DARK, text_color=TEXT, command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw")
         ctk.CTkLabel(self.frame_input, text="Create a new profile:", text_color=TEXT, font=("Comic Sans MS", 14)).grid(row=1, column=0, padx=20, pady=10, sticky="w")
