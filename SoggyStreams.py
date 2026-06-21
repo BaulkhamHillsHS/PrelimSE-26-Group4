@@ -201,7 +201,7 @@ class twofactorpage(ctk.CTk):
             
 
 class HomePage(ctk.CTk):
-    def __init__(self): #self,user_logged_in,email_logged_in,password_logged_in
+    def __init__(self, user_logged_in, email_logged_in, password_logged_in):
         super().__init__()
         self.title("SoggyStreams")
         self.geometry("500x700")
@@ -266,13 +266,7 @@ text_color=TEXT,
                                         )
         self.btn_settings.grid(row=2, column=0, padx=125, pady=10, sticky="n")
         
-        """self.btn_settings.bind(
-        "<Enter>",
-        lambda e: self.btn_settings.configure(text_color="#777A8C", fg_color = "#1B2258"))
-        
-        self.btn_settings.bind(
-        "<Leave>",
-        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
+
         
         self.btn_profiles = ctk.CTkButton(self.frame_input,
                                         text="Choose a profile", 
@@ -283,14 +277,7 @@ text_color=TEXT,
                                         command = self.openProfiles
                                         )
         self.btn_profiles.grid(row=2, column=0, padx=125, pady=10, sticky="n")
-        
-        self.btn_profiles.bind(
-        "<Enter>",
-        lambda e: self.btn_profiles.configure(text_color="#777A8C", fg_color = "#1B2258"))
-        
-        self.btn_profiles.bind(
-        "<Leave>",
-        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
+
         
         self.btn_search = ctk.CTkButton(self.frame_input,
                                         text="Search",
@@ -313,13 +300,6 @@ hover_color=PRIMARY_DARK,
 text_color=TEXT,
                                         command = self.logout
                                         )
-        self.btn_logout.bind(
-        "<Enter>",
-        lambda e: self.btn_logout.configure(text_color="#777A8C", fg_color = "#1B2258"))
-        
-        self.btn_logout.bind(
-        "<Leave>",
-        lambda e: self.btn_logout.configure(text_color="#1B2258", fg_color = "#777A8C"))
         
         self.btn_logout.grid(row=4, column=0, padx=125, pady=10, sticky="n")
         
@@ -1065,7 +1045,7 @@ text_color=TEXT, command=self.checkpasswords)
 
 if __name__ == "__main__":
     
-    app = HomePage()
+    app = Login()
     app.mainloop()
   
 
