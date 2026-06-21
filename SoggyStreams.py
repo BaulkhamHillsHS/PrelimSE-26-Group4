@@ -6,8 +6,9 @@ import smtplib
 from smtplib import SMTP
 from email.message import EmailMessage
 import random
+from PIL import ImageTk, Image
 # from PIL import Image # may need to pip install pillow for this to wrok (its for images)
-
+# 
 class Login(ctk.CTk):
     
     def __init__(self):
@@ -130,54 +131,59 @@ class HomePage(ctk.CTk):
         self.resizable(True, True)
         self._build_ui()
         self.minsize(400, 300)
-        self.configure(fg_color="#41190D")
+        self.configure(fg_color="#072E46")
     def _build_ui(self):
         self._build_frame()
         
     def _build_frame(self):
-        self.frame_input = ctk.CTkFrame(self, fg_color="transparent") #240E07 #9C9C9C
+        
+        self.frame_input = ctk.CTkFrame(self) #240E07 #9C9C9C
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
         self.frame_input.grid(row=0, column=0)
         
-        ctk.CTkLabel(self.frame_input, text="SoggyStreams", text_color="#9C9C9C", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=125, pady=100, sticky="n")
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        image_path = os.path.join(script_dir, "SoggyStreams.jpg")
+        raw_image = Image.open(image_path) # need to add logo image to folder for this to work
+        logo_image = ctk.CTkImage(
+            light_image=raw_image,
+            dark_image=raw_image,
+            size=(100, 100)
+        )
+        image_label = ctk.CTkLabel(self.frame_input, text="", image=logo_image)
+        image_label.grid(row=1, column=0, padx=125, pady=40, sticky="n")
+        
+        ctk.CTkLabel(self.frame_input, text="SoggyStreams", font=("Comic Sans MS", 24, "bold")).grid(row=0, column=0, padx=125, pady=(100, 10), sticky="n")
         
         self.btn_settings = ctk.CTkButton(self.frame_input,
                                         text="My Settings", 
-                                        text_color= "#1B2258",
+                                        fg_color="#CC5404",
+                                        hover_color="#853601",
                                         font = ("Comic Sans MS", 12),
-                                        fg_color="#777A8C",
-                                        hover_color = "#1B2258",
                                         command = self.openSettings
                                         )
-        self.btn_settings.grid(row=1, column=0, padx=125, pady=10, sticky="n")
+        self.btn_settings.grid(row=2, column=0, padx=125, pady=10, sticky="n")
         
-        self.btn_settings.bind(
+        """self.btn_settings.bind(
         "<Enter>",
         lambda e: self.btn_settings.configure(text_color="#777A8C", fg_color = "#1B2258"))
         
         
         self.btn_settings.bind(
         "<Leave>",
-        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))
+        lambda e: self.btn_settings.configure(text_color="#1B2258", fg_color="#777A8C"))"""
+        # unsure whether this will be of use or nah
         
         self.btn_search = ctk.CTkButton(self.frame_input,
-                                        text="Search", 
-                                        text_color= "#1B2258",
+                                        text="Search",
                                         font = ("Comic Sans MS", 12,),
-                                        fg_color="#777A8C",
-                                        hover_color = "#1B2258",
+                                        fg_color="#CC5404",
+                                        hover_color="#853601",
                                         command = self.openSearch
                                         )
-        self.btn_search.bind(
-        "<Enter>",
-        lambda e: self.btn_search.configure(text_color="#777A8C", fg_color = "#1B2258"))
+       
         
-        self.btn_search.bind(
-        "<Leave>",
-        lambda e: self.btn_search.configure(text_color="#1B2258", fg_color = "#777A8C"))
-        
-        self.btn_search.grid(row=2, column=0, padx=125, pady=(10, 100), sticky="n")
+        self.btn_search.grid(row=3, column=0, padx=125, pady=(10, 100), sticky="n")
     
     def openSearch(self):  
         # serach, watchlist
@@ -194,8 +200,8 @@ class HomePage(ctk.CTk):
         home_btn = ctk.CTkButton(self.frame_input, 
                                 text="SoggyStreams", 
                                 font = ("Comic Sans MS", 24, "bold"), 
-                                fg_color="#000000",
-                                hover_color="#000000",
+                                fg_color="#CC5404",
+                                hover_color="#853601",
                                 command=self.return_home)
         home_btn.grid(row=0, column=0, padx=20, pady=20, sticky = "nw") # return home button
         
@@ -206,10 +212,10 @@ class HomePage(ctk.CTk):
 
         self.search_button = ctk.CTkButton(self.frame_input, 
                                            text="Go", 
-                                           text_color= "#1B2258",
+                                           text_color= "#FFFFFF",
                                             font = ("Comic Sans MS", 12,),
-                                            fg_color="#777A8C",
-                                            hover_color = "#1B2258",
+                                            fg_color="#CC5404",
+                                             hover_color="#853601",
                                            command=self.run_search)
         self.search_button.grid(row=2, column=1, padx=10, pady=20)
     def run_search(self):
@@ -315,7 +321,7 @@ class HomePage(ctk.CTk):
         # need to add a command to actually craete proifle to csv
 
 if __name__ == "__main__":
-    app = Login()
+    app = HomePage()
     app.mainloop()
   
 """
