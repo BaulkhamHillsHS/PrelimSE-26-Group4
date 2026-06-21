@@ -20,6 +20,28 @@ SUBTEXT = "#AAB4C5"
 MID = "#1B2236"
 BORDER = "#101A2E"
 
+class Movie:
+    def __init__(self, title, search_key, rating=None, length=None, thumbnail=None):
+        self.title = title
+        self.search_key = search_key
+        self.rating = rating
+        self.length = length
+        self.thumbnail = thumbnail
+        
+        
+        # do the thumbnails
+        
+        
+class TVSHOW:
+    def __init__(self, title, search_key, rating=None, seasons = 0, episodes=0, thumbnail=None):
+        self.title = title
+        self.search_key = search_key
+        self.rating = rating
+        self.seasons = seasons
+        self.episodes = episodes
+        self.thumbnail = thumbnail
+        
+
 class Login(ctk.CTk):
     
     def __init__(self):
@@ -28,7 +50,6 @@ class Login(ctk.CTk):
         self.geometry("600x600")
         self.resizable(True, True)
         self._build_ui()
-        self.minsize(400, 300)
 
     def _build_ui(self):
         self._build_frame()
@@ -93,7 +114,7 @@ class twofactorpage(ctk.CTk):
         self.geometry("600x600")
         self.resizable(True, True)
         self._build_ui()
-        self.minsize(400, 300)
+
         self.configure(fg_color = BG)
     def _build_ui(self):
         self._build_frame()
@@ -145,12 +166,24 @@ class HomePage(ctk.CTk):
     def __init__(self): #self,user_logged_in,email_logged_in,password_logged_in
         super().__init__()
         self.title("SoggyStreams")
-        self.geometry("1200x1000")
+        self.geometry("500x700")
         self.resizable(True, True)
         self._build_ui()
-        self.minsize(400, 300)
         self.configure(fg_color = BG)
-        self.minsize(1000, 600)
+        self.movies = [
+            Movie("Zootopia", "zootopia", rating="G", length="1h 48m", thumbnail="Zootopia.jpg"),
+            Movie("Frozen", "frozen", rating="PG", length="1h 42m", thumbnail="Frozen.jpg"),
+            Movie("Spider-Man: No Way Home", "spidermannowayhome", rating="M", length="2h 28m", thumbnail="Spiderman.jpg"),
+            Movie("Deadpool", "deadpool", rating="MA15+", length="1h 48m", thumbnail="Deadpool.jpg"),
+            Movie("Titanic", "titanic", rating="M", length="3h 14m", thumbnail="Titanic.jpg")
+        ]
+
+        self.tvshows = [
+            TVSHOW("Ninjago", "ninjago", rating="PG", seasons="7", episodes="280", thumbnail="Ninjago.jpg"),
+            TVSHOW("Pokemon", "pokemon", rating="PG", seasons="9", episodes="718", thumbnail="Pokemon.jpg"),
+            TVSHOW("The Umbrella Academy", "theumbrellaacademy", rating="MA15+", seasons = "4", episodes = "36", thumbnail="Umbrella.jpg")
+        ]
+        
         #self.user_logged_in = user_logged_in
         #self.email_logged_in = email_logged_in
         #self.password_logged_in = password_logged_in
@@ -303,34 +336,125 @@ text_color=TEXT,
         self.return_home()
         
     def run_search(self):
-        query = self.search_entry.get()
-        if query.strip() == "": #makes sure there are no results for an empty search
+        query = self.search_entry.get().strip()
+
+        if query == "":
             return
-        self.search_entry.delete(0, 'end') #clears searches
-        
+
+        # normalize query
+        query = query.lower().replace(" ", "").replace("-", "")
+
+        # clear old results (keep UI)
         for widget in self.frame_input.winfo_children():
-            if widget.grid_info().get('row', 0) >= 3 and widget != self.backsearch_button: #destroys widget between searches, except back button
+            info = widget.grid_info()
+            if info.get("row", 0) >= 3:
                 widget.destroy()
-        watches = ["Zootopia [G]", "Frozen [PG]", "Spider-Man: No Way Home [M]", "Deadpool [MA15+]", "Titanic [M]", "Wolf on Wall Street [R]", "Ninjago [PG]", "Pokemon [PG]", "The Umbrella Academy [MA15+]"]
-        watches2 = ["zootopia", "frozen", "spidermannowayhome", "deadpool", "titanic", "wolfonwallstreet", "ninjago", "pokemon", "theumbrellaacademy"]
-        searchMatches = 3
-        for i, watch in enumerate(watches2):
-            if query.lower().replace(" ", "").replace("-", "") in watch: #eliminating spaces for ease of search and ignoring typos (with spaces) etc.
-                self.search_results_button = ctk.CTkButton(self.frame_input, text=watches[i],fg_color=PRIMARY,
-hover_color=PRIMARY_DARK,
-text_color=TEXT, command=lambda m=watches[i]: self.play_movie(m))
-                self.search_results_button.grid(row=searchMatches, column=0, padx=10, pady=20)
-                searchMatches += 1 # for the column of the search resutlts to stack down properly
-        if searchMatches == 3:
-            ctk.CTkLabel(self.frame_input, text="No results found.", text_color=TEXT).grid(row=3, column=0, padx=20, pady=10)
-            
-    def play_movie(self, movie):
+
+        results = []
+
+        # search movies
+        for movie in self.movies:
+            if query in movie.search_key.lower():
+                results.append(movie)
+
+        # search TV shows
+        for show in self.tvshows:
+            if query in show.search_key.lower():
+                results.append(show)
+
+        # no results
+        if not results:
+            ctk.CTkLabel(
+                self.frame_input,
+                text="No results found.",
+                text_color=TEXT
+            ).grid(row=3, column=0, padx=20, pady=10)
+            return
+
+        row = 3
+
+        for item in results:
+            btn = ctk.CTkButton(
+                self.frame_input,
+                text=item.title,
+                fg_color=PRIMARY,
+                hover_color=PRIMARY_DARK,
+                text_color=TEXT,
+                command=lambda m=item: self.play_movie(m)
+            )
+            btn.grid(row=row, column=0, padx=10, pady=10)
+            row += 1
+                
+    def play_movie(self, movie_obj):
+        # clear screen
         for widget in self.winfo_children():
             widget.destroy()
+
         self.frame_input = ctk.CTkFrame(self, fg_color=FRAME)
         self.frame_input.grid(row=0, column=0, sticky="nsew")
-        ctk.CTkLabel(self.frame_input, text=f"Now playing: {movie}", text_color=TEXT, font=("Arial", 18)).grid(row=0, column=0, padx=20, pady=20) 
-        #placeholder
+
+        # header container (stacked layout)
+        header = ctk.CTkFrame(self.frame_input, fg_color="transparent")
+        header.grid(row=0, column=0, padx=20, pady=20, sticky="w")
+
+        # "Now playing" title
+        now_playing = ctk.CTkLabel(
+            header,
+            text="Now playing:",
+            text_color=SUBTEXT,
+            font=("Arial", 14)
+        )
+        now_playing.grid(row=0, column=0, sticky="w")
+
+        # movie title
+        title_label = ctk.CTkLabel(
+            header,
+            text=movie_obj.title,
+            text_color=TEXT,
+            font=("Arial", 20, "bold")
+        )
+        title_label.grid(row=1, column=0, pady=(5, 10), sticky="w")
+
+        # thumbnail UNDER title
+        if getattr(movie_obj, "thumbnail", None):
+            try:
+                img = Image.open(movie_obj.thumbnail)
+                img = img.resize((180, 260))
+
+                img_ctk = ctk.CTkImage(
+                    light_image=img,
+                    dark_image=img,
+                    size=(180, 260)
+                )
+
+                img_label = ctk.CTkLabel(
+                    header,
+                    image=img_ctk,
+                    text=""
+                )
+                img_label.image = img_ctk
+                img_label.grid(row=2, column=0, pady=10, sticky="w")
+
+            except Exception as e:
+                print("Thumbnail load failed:", e)
+
+        # info line
+        info = f"{movie_obj.rating or ''}   {movie_obj.length or ''}"
+        ctk.CTkLabel(
+            self.frame_input,
+            text=info,
+            text_color=SUBTEXT
+        ).grid(row=1, column=0, padx=20, pady=(0, 10), sticky="w")
+
+        # back button
+        ctk.CTkButton(
+            self.frame_input,
+            text="Return Home",
+            fg_color=PRIMARY,
+            hover_color=PRIMARY_DARK,
+            text_color=TEXT,
+            command=self.return_home
+        ).grid(row=2, column=0, padx=20, pady=10, sticky="w")
         newviewdict = [] #new list to append
         with open('viewinghistory.csv', 'r') as csv_file:
             csvview = csv.DictReader(csv_file)
