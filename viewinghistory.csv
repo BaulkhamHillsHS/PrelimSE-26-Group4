@@ -1,6 +1,7 @@
 username,profile_name,viewed_movie,timestamp
 MrDunne,Ryan,,
-AnshNayak,Ansh,<__main__.Movie object at 0x10cd56270>,
+BryanHe,Bryan,,
+AnshNayak,Ansh,,
 LiamSmith,Liam,,
 OliviaJones,Olivia,,
 EthanBrown,Ethan,,
@@ -11,4 +12,8 @@ OliverWhite,Oliver,,
 SophiaMartin,Sophia,,
 LucasClark,Lucas,,
 ChloeLewis,Chloe,,
-BryanHe,Bryan,Ninjago [PG],
+
+EthanBrown,Ethan,Frozen,2026-06-21 21:07:02
+EthanBrown,Ethan,Pokemon,2026-06-21 21:07:19
+EthanBrown,test,,
+BryanHe,test,,
